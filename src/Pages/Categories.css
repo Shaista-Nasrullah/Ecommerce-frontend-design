@@ -1,0 +1,246 @@
+/* General Page Container */
+.fullPage {
+  background-color: #fafbfc;
+}
+
+.cat-page-container {
+  max-width: 1200px;
+  padding: 20px 40px; /* Adjust padding as needed */
+  /* background-color: #fafbfc;  */
+  min-height: 100vh;
+  margin: auto;
+}
+
+/* Header Section (CATEGORY and Search Bar) */
+.cat-header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  background-color: #f3fafd; /* White background for the header section */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.cat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.cat-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.cat-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Search Bar */
+.cat-search-bar-container {
+  display: flex;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  overflow: hidden;
+  width: 300px; /* Fixed width for the search bar */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.cat-search-input {
+  flex-grow: 1;
+  border: none;
+  padding: 10px 15px;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.cat-search-input::placeholder {
+  color: #adb5bd;
+}
+
+.cat-search-button {
+  background-color: #1455ac; /* Blue button */
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: background-color 0.2s ease;
+}
+
+.cat-search-button:hover {
+  background-color: #0056b3;
+}
+
+/* Categories Grid */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(180px, 1fr)
+  ); /* Responsive grid */
+  gap: 20px;
+  padding: 20px 0;
+}
+
+/* Category Card */
+.cat-card {
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 150px; /* Ensure consistent height */
+  cursor: pointer;
+}
+
+.cat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cat-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  /* border-radius: 50%;
+  background-color: #e0f2f7;  */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  flex-shrink: 0; /* Prevent icon wrapper from shrinking */
+  padding-top: 10px;
+}
+
+.cat-icon {
+  width: 70px; /* Icon size */
+  height: 70px;
+  border-radius: 50%;
+  object-fit: contain; /* Ensure image scales properly */
+  margin-top: 10px;
+}
+
+.cat-icon-placeholder {
+  width: 40px;
+  height: 40px;
+  background-color: #ccc; /* Placeholder color for missing image */
+  border-radius: 50%;
+}
+
+.cat-name {
+  font-size: 0.9rem;
+  color: #333;
+  font-weight: 500;
+  margin-top: 5px;
+  word-break: break-word; /* Prevent long names from overflowing */
+}
+
+/* Loading and Error Messages */
+.cat-loading-message,
+.cat-error-message,
+.cat-no-categories-found {
+  text-align: center;
+  padding: 50px;
+  font-size: 1.1rem;
+  color: #555;
+  background-color: #fff;
+  margin: 20px auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+}
+
+.cat-error-message {
+  color: #dc3545; /* Red for error messages */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .cat-page-container {
+    padding: 15px 20px;
+  }
+
+  .cat-header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
+  }
+
+  .cat-search-bar-container {
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  .cat-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+  }
+
+  .cat-card {
+    padding: 15px;
+    min-height: 130px;
+  }
+
+  .cat-icon-wrapper {
+    width: 50px;
+    height: 50px;
+  }
+
+  .cat-icon {
+    width: 35px;
+    height: 35px;
+  }
+
+  .cat-title {
+    font-size: 1.3rem;
+  }
+
+  .cat-subtitle {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cat-page-container {
+    padding: 10px;
+  }
+
+  .cat-header-section {
+    padding: 10px;
+  }
+
+  .cat-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+
+  .cat-card {
+    padding: 10px;
+    min-height: 110px;
+  }
+
+  .cat-icon-wrapper {
+    width: 45px;
+    height: 45px;
+  }
+
+  .cat-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .cat-name {
+    font-size: 0.8rem;
+  }
+}

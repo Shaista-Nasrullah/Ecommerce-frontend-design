@@ -1,0 +1,248 @@
+/* General Page Container */
+.fullBrandPage {
+  background-color: #fafbfc;
+}
+
+.brand-page-container {
+  max-width: 1200px;
+  padding: 20px 40px;
+  min-height: 100vh;
+  margin: auto;
+}
+
+/* Header Section (BRANDS and Search Bar) */
+.brand-header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  background-color: #f3fafd;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.brand-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title-page {
+  /* Specific class name */
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.brand-subtitle-page {
+  /* Specific class name */
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Search Bar */
+.brand-search-bar-container {
+  display: flex;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  overflow: hidden;
+  width: 300px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.brand-search-input {
+  flex-grow: 1;
+  border: none;
+  padding: 10px 15px;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.brand-search-input::placeholder {
+  color: #adb5bd;
+}
+
+.brand-search-button {
+  background-color: #1455ac;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: background-color 0.2s ease;
+}
+
+.brand-search-button:hover {
+  background-color: #0056b3;
+}
+
+/* Brands Grid */
+.brand-grid-page {
+  /* Specific class name */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
+
+/* Brand Card */
+.brand-card-page {
+  /* Specific class name */
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 150px;
+  cursor: pointer;
+}
+
+.brand-card-page:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.brand-icon-wrapper-page {
+  /* Specific class name */
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+  padding-top: 10px;
+}
+
+.brand-icon-page {
+  /* Specific class name */
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: contain;
+  margin-top: 10px;
+}
+
+.brand-icon-placeholder-page {
+  /* Specific class name */
+  width: 40px;
+  height: 40px;
+  background-color: #ccc;
+  border-radius: 50%;
+}
+
+.brand-name-page {
+  /* Specific class name */
+  font-size: 0.9rem;
+  color: #333;
+  font-weight: 500;
+  margin-top: 5px;
+  word-break: break-word;
+}
+
+/* Loading and Error Messages */
+.brand-loading-message,
+.brand-error-message,
+.brand-no-brands-found {
+  text-align: center;
+  padding: 50px;
+  font-size: 1.1rem;
+  color: #555;
+  background-color: #fff;
+  margin: 20px auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+}
+
+.brand-error-message {
+  color: #dc3545;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .brand-page-container {
+    padding: 15px 20px;
+  }
+
+  .brand-header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
+  }
+
+  .brand-search-bar-container {
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  .brand-grid-page {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+  }
+
+  .brand-card-page {
+    padding: 15px;
+    min-height: 130px;
+  }
+
+  .brand-icon-wrapper-page {
+    width: 50px;
+    height: 50px;
+  }
+
+  .brand-icon-page {
+    width: 35px;
+    height: 35px;
+  }
+
+  .brand-title-page {
+    font-size: 1.3rem;
+  }
+
+  .brand-subtitle-page {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-page-container {
+    padding: 10px;
+  }
+
+  .brand-header-section {
+    padding: 10px;
+  }
+
+  .brand-grid-page {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+
+  .brand-card-page {
+    padding: 10px;
+    min-height: 110px;
+  }
+
+  .brand-icon-wrapper-page {
+    width: 45px;
+    height: 45px;
+  }
+
+  .brand-icon-page {
+    width: 30px;
+    height: 30px;
+  }
+
+  .brand-name-page {
+    font-size: 0.8rem;
+  }
+}

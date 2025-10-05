@@ -1,0 +1,143 @@
+.HeroSection-container {
+  height: 400px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  background-color: #fafbfc;
+}
+
+@media (max-width: 991.98px) {
+  .HeroSection-container {
+    height: auto;
+    margin: 10px auto;
+    border: none;
+  }
+}
+
+.menus {
+  background-color: white;
+  border-right: 1px solid #e0e0e0;
+}
+
+.menus .nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #fafbfc;
+
+  border-bottom: 1px solid #f0f0f0;
+  color: red;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+}
+
+.menus .nav-link a {
+  color: #000;
+}
+
+.menus .nav-link:hover {
+  color: #555;
+  font-weight: bold;
+  background-color: #f8f9fa;
+}
+
+.right-icon {
+  color: #ddd;
+}
+/* NEW STYLES FOR CATEGORY ICONS */
+.category-link-with-icon {
+  display: flex; /* Use flexbox to align icon and text */
+  align-items: center; /* Vertically center icon and text */
+  gap: 10px; /* Space between the icon and the text */
+}
+
+.category-icon {
+  width: 24px; /* Adjust icon size as needed */
+  height: 24px;
+  object-fit: contain; /* Ensures the whole icon is visible without cropping */
+}
+
+.sub-category-container {
+  height: 400px;
+  padding: 15px;
+  overflow-y: auto;
+  border-left: 1px solid #e0e0e0;
+}
+
+.sub-category-container h4 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.sub-category-container .nav-link {
+  padding: 5px 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.sub-category-container .nav-link:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.carousel {
+  height: 400px;
+  overflow: hidden;
+}
+
+.carousel .carousel-item img {
+  object-fit: cover;
+  height: 400px;
+  width: 100%;
+}
+
+.offcanvas-sub-categories .nav-link {
+  padding-left: 1.5rem;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.offcanvas-sub-categories .nav-link:hover {
+  color: #000;
+}
+
+.menu-toggle-btn {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hero-title-sm {
+  font-weight: 600;
+  color: #333;
+}
+
+@media (max-width: 991.98px) {
+  .carousel {
+    height: 250px;
+  }
+
+  .carousel .carousel-item img {
+    height: 250px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .carousel {
+    height: 180px;
+  }
+
+  .carousel .carousel-item img {
+    height: 180px;
+  }
+  .menu-toggle-btn {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
+  .hero-title-sm {
+    font-size: 1.1rem;
+  }
+}

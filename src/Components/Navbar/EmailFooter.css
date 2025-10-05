@@ -1,0 +1,117 @@
+/* Basic styling to mimic Bootstrap classes */
+.d-flex {
+  display: flex;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.gap-2 > *:not(:last-child) {
+  margin-right: 0.5rem; /* For gap-2 */
+}
+
+.gap-3 > *:not(:last-child) {
+  margin-right: 0.75rem; /* For gap-3 */
+}
+
+.gap-4 > *:not(:last-child) {
+  margin-right: 1rem; /* For gap-4 */
+}
+
+.mb-3 {
+  margin-bottom: 1rem; /* For mb-3 */
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-dark {
+  color: #212529; /* A dark gray color */
+  text-decoration: none; /* Remove underline from links */
+}
+
+.text-dark:hover {
+  text-decoration: underline; /* Add underline on hover for links */
+}
+
+.fz-16 {
+  font-size: 1rem; /* 16px */
+}
+
+.d-none {
+  display: none !important;
+}
+
+/* Specific component styles */
+.view-footer-text {
+  font-size: 0.9em;
+  color: #6c757d;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.thanks-regards {
+  font-size: 0.95em;
+  color: #343a40;
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.view-mail-logo {
+  display: block; /* Ensure the image behaves as a block for mx-auto */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.email-list-inline {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+  justify-content: center;
+}
+
+.email-list-inline li {
+  display: inline-block; /* For inline list items */
+}
+
+.email-list-inline li a {
+  padding: 0 5px; /* Add some padding around links */
+  white-space: nowrap; /* Prevent links from breaking */
+}
+
+.email-list-inline li:not(:last-child) a::after {
+  content: "|";
+  margin-left: 10px;
+  color: #6c757d;
+}
+
+.social-media-icon a img {
+  vertical-align: middle;
+}
+
+.social-media-icon a {
+  display: inline-block;
+  margin: 0 5px; /* Space between social icons */
+}
+
+.view-copyright-text {
+  font-size: 0.8em;
+  color: #6c757d;
+  text-align: center;
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e9ecef; /* A light separator */
+}

@@ -1,0 +1,189 @@
+/* Footer.css */
+
+.footer-container {
+  background-color: #184261;
+  color: #ffffff; /* White text color */
+  font-family: "Poppins", sans-serif; /* Using a more specific font name */
+  padding: 0; /* Bootstrap Container handles padding */
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-content {
+  /* Using Bootstrap's Container, Row, Col for layout */
+}
+
+.brand-logo img {
+  height: 50px;
+  width: auto;
+}
+
+.brand-logo p {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.download-app-text {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.app-badge {
+  height: 40px; /* Adjust size of app store badges */
+  width: auto;
+}
+
+.footer-section-title {
+  /* Generic class for all section titles */
+  font-size: 16px;
+  margin-bottom: 1rem; /* Using rem for consistency */
+  font-weight: bold;
+  color: white;
+}
+
+.list-unstyled {
+  /* react-bootstrap's ul already uses this class, but for custom styling */
+  padding: 0;
+  margin: 0;
+}
+
+.list-unstyled li {
+  margin-bottom: 0.5rem;
+}
+
+.list-unstyled li a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  transition: opacity 0.3s ease;
+}
+
+.list-unstyled li a:hover {
+  opacity: 0.8;
+  color: #d1e2f6; /* Lighter color on hover */
+}
+
+.newsletter-section p {
+  font-size: 14px;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+.newsletter-form-group {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex; /* Ensure input and button are side-by-side */
+}
+
+.newsletter-input {
+  border: none;
+  padding: 10px 15px;
+  /* background-color: red;
+  color: #ffffff; */
+  font-size: 14px;
+  outline: none;
+  flex-grow: 1; /* Allow input to take available space */
+}
+
+.newsletter-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.newsletter-button {
+  background-color: #ffffff;
+  color: #1e3a53;
+  padding: 10px 20px;
+  margin: 4px; /* Adjust margin to create space inside the bordered group */
+  border: none; /* Button inside input group shouldn't have its own border */
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600; /* semibold */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.newsletter-button:hover {
+  background-color: #f0f0f0;
+  color: #1e3a53; /* Ensure text color remains dark on hover */
+}
+
+/* Footer Bottom Section */
+.footer-bottom {
+  /* Using Bootstrap's Container, Row, Col for layout */
+  border-top: 1px solid rgba(255, 255, 255, 0.2); /* Separator line */
+  margin-top: 2rem;
+}
+
+.footer-heading {
+  font-size: 1rem; /* Slightly smaller for h5 */
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.footer-heading::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 50px; /* Underline effect */
+  height: 2px;
+  background-color: #d1e2f6;
+}
+
+.contact-info span,
+.address-info span {
+  display: flex; /* To align icon and text */
+  align-items: center;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.contact-info span svg,
+.address-info span svg {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.social-icons a {
+  color: #ffffff;
+  font-size: 18px;
+  opacity: 0.7;
+  transition: opacity 0.3s ease, color 0.3s ease;
+}
+
+.social-icons a:hover {
+  opacity: 1;
+  color: #d1e2f6;
+}
+
+.footer-copyright {
+  background-color: #24495f;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.footer-copyright p {
+  margin: 0; /* Remove default paragraph margin */
+}
+
+/* Responsive adjustments already handled largely by Bootstrap's grid,
+   but specific custom adjustments can still be added here if needed. */
+@media (max-width: 768px) {
+  .brand-logo {
+    justify-content: center !important; /* Center on smaller screens */
+  }
+  .app-download-links {
+    justify-content: center !important; /* Center on smaller screens */
+  }
+  .text-md-start {
+    text-align: center !important; /* Override Bootstrap's md breakpoint for text alignment */
+  }
+  .footer-heading {
+    display: inline-block !important; /* Re-enable inline-block for centering underline */
+  }
+  .footer-heading::after {
+    left: 50%;
+    transform: translateX(-50%); /* Center the underline */
+  }
+}
