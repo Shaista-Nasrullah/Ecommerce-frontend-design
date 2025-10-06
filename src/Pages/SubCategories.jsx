@@ -1,87 +1,40 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Import useParams
-import "./Categories.css"; // Assuming you want to reuse the same CSS
+import React, { useEffect, useState, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
+import "./Categories.css";
 
 const SubCategories = () => {
-  const { id } = useParams(); // Get the category ID from the URL
-  const [subCategories, setSubCategories] = useState([]); // Renamed for clarity
+  const { id } = useParams();
+  const [subCategories, setSubCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  const IMAGE_BASE_URL = "https://tdsonlinepk.alitechnosolutions.com/";
+  // Consume the fetchSubCategoriesData from context
+  const { fetchSubCategoriesData } = useContext(AppContext);
 
   useEffect(() => {
-    const fetchSubCategories = async () => {
-      console.log(
-        `Attempting to fetch subcategories for category ID: ${id}...`
-      );
-      try {
-        const response = await fetch(`/api/categories/sub/${id}`); // Use the dynamic 'id'
-        console.log("Fetch response received:", response);
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(
-            `HTTP error! status: ${response.status}, message: ${errorText}`
-          );
-        }
-
-        const data = await response.json();
-        console.log("API Data received for subcategories:", data);
-
-        // Your Postman response shows an array directly, so we'll handle that first.
-        // If your API wraps it in a 'data' property for subcategories too, adjust here.
-        if (Array.isArray(data)) {
-          const subCategoriesWithFullImageUrls = data.map((subCategory) => ({
-            ...subCategory,
-            image: subCategory.image
-              ? `${IMAGE_BASE_URL}${subCategory.image}`
-              : null,
-          }));
-          setSubCategories(subCategoriesWithFullImageUrls);
-          console.log(
-            "Subcategories set successfully:",
-            subCategoriesWithFullImageUrls
-          );
-        } else if (data && Array.isArray(data.data)) {
-          // Fallback if API returns {data: [...]}
-          const subCategoriesWithFullImageUrls = data.data.map(
-            (subCategory) => ({
-              ...subCategory,
-              image: subCategory.image
-                ? `${IMAGE_BASE_URL}${subCategory.image}`
-                : null,
-            })
-          );
-          setSubCategories(subCategoriesWithFullImageUrls);
-          console.log(
-            "Subcategories set successfully (from data.data):",
-            subCategoriesWithFullImageUrls
-          );
-        } else {
-          throw new Error(
-            "API response for subcategories is not an array, and no 'data' array found."
-          );
-        }
-      } catch (error) {
-        console.error("Failed to fetch subcategories:", error);
-        setError(error);
-      } finally {
+    const getSubCategories = async () => {
+      if (!id) {
         setLoading(false);
-        console.log("Loading state set to false.");
+        setError(new Error("No category ID provided in the URL."));
+        return;
+      }
+
+      console.log(
+        `SubCategories Component: Attempting to fetch subcategories for category ID: ${id}...`
+      );
+      // Call the function from context, passing its own loading/error setters
+      const data = await fetchSubCategoriesData(id, setLoading, setError);
+      if (data) {
+        setSubCategories(data);
+        console.log("Subcategories set successfully in component:", data);
       }
     };
 
-    if (id) {
-      // Only fetch if 'id' is available
-      fetchSubCategories();
-    } else {
-      setLoading(false);
-      setError(new Error("No category ID provided in the URL."));
-    }
-  }, [id]); // Re-run effect when 'id' changes
+    getSubCategories();
+  }, [id, fetchSubCategoriesData]); // Re-run effect when 'id' or the context function changes
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -92,13 +45,8 @@ const SubCategories = () => {
     console.log("Search submitted for subcategories:", searchQuery);
   };
 
-  // Decide where clicking a subcategory card should go
   const handleSubCategoryClick = (subCategoryId) => {
-    // For now, let's assume clicking a subcategory might lead to products or another detail page.
-    // If you have further nested subcategories, you'd navigate like: `/categories/${subCategoryId}`
-    // For products, it might be: `/products/${subCategoryId}` or `/category/${id}/products/${subCategoryId}`
     console.log(`Clicked subcategory ID: ${subCategoryId}`);
-    // Example: Navigate to a product listing page for this subcategory
     navigate(`/products?subCategoryId=${subCategoryId}`);
   };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import {
   Container,
   Row,
@@ -7,35 +7,80 @@ import {
   Carousel,
   Offcanvas,
   Button,
+  Spinner,
+  Alert,
 } from "react-bootstrap";
 import "./HeroSection3.css";
-import carousel1 from "../Components/Assets/first.webp";
-import carousel2 from "../Components/Assets/second.webp";
-import carousel3 from "../Components/Assets/third.webp";
 import { List } from "react-bootstrap-icons";
-import category1 from "../Components/Assets/category1.png"; // Assuming these paths are correct relative to HeroSection2.js
-import category2 from "../Components/Assets/category2.png";
-import category3 from "../Components/Assets/category3.png";
-import category4 from "../Components/Assets/category4.png";
-import category5 from "../Components/Assets/category5.png";
-import category6 from "../Components/Assets/category6.png";
-import category7 from "../Components/Assets/category7.png";
-import category8 from "../Components/Assets/category8.png";
+import { AppContext } from "../context/AppContext";
 
 const HeroSection2 = () => {
+  const {
+    allCategories,
+    fetchAllCategoriesData,
+    fetchSubCategoriesData,
+    firstBanner, // Destructure firstBanner from AppContext
+    loading: appGlobalLoading, // Renamed to avoid conflict with local loading
+    error: appGlobalError, // Renamed to avoid conflict with local error
+  } = useContext(AppContext);
+
+  // Local states for HeroSection2's categories fetching
+  const [localCategoriesLoading, setLocalCategoriesLoading] = useState(true);
+  const [localCategoriesError, setLocalCategoriesError] = useState(null);
+
   const [showSubCategories, setShowSubCategories] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null);
-  const [showOffcanvas, setShowOffcanvas] = useState(false); // State for Offcanvas visibility
+  const [activeCategoryId, setActiveCategoryId] = useState(null);
+  const [subCategories, setSubCategories] = useState([]);
+  const [loadingSubCategories, setLoadingSubCategories] = useState(false);
+  const [subCategoriesError, setSubCategoriesError] = useState(null);
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
+
+  // Fetch all categories when the component mounts
+  useEffect(() => {
+    fetchAllCategoriesData(setLocalCategoriesLoading, setLocalCategoriesError);
+  }, [fetchAllCategoriesData]);
+
+  // Function to fetch subcategories
+  const getSubCategories = useCallback(
+    async (categoryId) => {
+      setLoadingSubCategories(true);
+      setSubCategoriesError(null);
+      try {
+        const data = await fetchSubCategoriesData(
+          categoryId,
+          setLoadingSubCategories,
+          setSubCategoriesError
+        );
+        setSubCategories(data);
+      } catch (err) {
+        setSubCategoriesError(err.message);
+        setSubCategories([]);
+      } finally {
+        setLoadingSubCategories(false);
+      }
+    },
+    [fetchSubCategoriesData]
+  );
 
   const handleMouseEnter = (category) => {
-    setShowSubCategories(true);
-    setActiveCategory(category);
+    if (category && category.id && category.id !== activeCategoryId) {
+      setActiveCategory(category.name);
+      setActiveCategoryId(category.id);
+      getSubCategories(category.id);
+      setShowSubCategories(true);
+    } else if (category && category.id === activeCategoryId) {
+      setShowSubCategories(true);
+    }
   };
 
   const handleMouseLeave = () => {
     if (!showOffcanvas) {
       setShowSubCategories(false);
-      setActiveCategory(null);
+      // Optionally reset active category/id/subcategories here if desired on full mouse leave
+      // setActiveCategory(null);
+      // setActiveCategoryId(null);
+      // setSubCategories([]);
     }
   };
 
@@ -43,32 +88,56 @@ const HeroSection2 = () => {
     setShowOffcanvas(false);
     setShowSubCategories(false);
     setActiveCategory(null);
+    setActiveCategoryId(null);
+    setSubCategories([]);
   };
+
   const handleOffcanvasShow = () => setShowOffcanvas(true);
 
-  const subCategoriesData = {
-    "Health & Beauty": ["Skincare", "Makeup", "Haircare", "Fragrances"],
-    "Pet Supplies": ["Dog Food", "Cat Toys", "Pet Beds"],
-    "Home & Kitchen": ["Cookware", "Bakeware", "Appliance", "Kitchen Tools"],
-    "Baby & Toddler": ["Diapers", "Baby Food", "Strollers", "Toys"],
-    "Sports & Outdoor": ["Fitness Gear", "Camping", "Cycling", "Running"],
-    "Phone & Gadgets": ["Smartphones", "Accessories", "Wearables"],
-    "Electronics & Gadgets": ["Laptops", "TVs", "Headphones", "Cameras"],
-    "Groceries & Dailies": ["Fresh Produce", "Dairy", "Snacks", "Beverages"],
+  const handleOffcanvasCategoryClick = (category) => {
+    if (activeCategoryId === category.id && showSubCategories) {
+      setShowSubCategories(false);
+      setActiveCategory(null);
+      setActiveCategoryId(null);
+      setSubCategories([]);
+    } else {
+      setActiveCategory(category.name);
+      setActiveCategoryId(category.id);
+      getSubCategories(category.id);
+      setShowSubCategories(true);
+    }
   };
 
-  // Map category names to their respective image imports
-  const categoryImages = {
-    "Health & Beauty": category1,
-    "Pet Supplies": category2,
-    "Home & Kitchen": category3,
-    "Baby & Toddler": category4,
-    "Sports & Outdoor": category5,
-    "Phone & Gadgets": category6,
-    "Electronics & Gadgets": category7, // Assuming you have an image for this
-    "Groceries & Dailies": category8, // Assuming you have an image for this
-    // Add other categories and their corresponding images
-  };
+  // Display loading state for main categories OR if firstBanner is still loading (part of appGlobalLoading)
+  if (localCategoriesLoading || appGlobalLoading) {
+    return (
+      <Container
+        fluid
+        className="HeroSection-container d-flex justify-content-center align-items-center"
+        style={{ height: "300px" }}
+      >
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading Content...</span>
+        </Spinner>
+      </Container>
+    );
+  }
+
+  // Display error state for main categories OR if there's a global app error
+  if (localCategoriesError || appGlobalError) {
+    return (
+      <Container
+        fluid
+        className="HeroSection-container d-flex justify-content-center align-items-center"
+        style={{ height: "300px" }}
+      >
+        <Alert variant="danger">
+          Error loading content:{" "}
+          {localCategoriesError?.message || appGlobalError?.message}
+        </Alert>
+      </Container>
+    );
+  }
 
   return (
     <Container fluid className="HeroSection-container">
@@ -87,37 +156,38 @@ const HeroSection2 = () => {
           <h5 className="m-0 hero-title-sm">Welcome!</h5>
         </Col>
 
-        {/* Categories Menu - Visible on large screens, hidden on small */}
         <Col lg={3} className="menus p-0 d-none d-lg-block">
           <Nav defaultActiveKey="/home" className="flex-column">
-            {Object.keys(subCategoriesData).map((category) => (
-              <Nav.Link
-                key={category}
-                eventKey={category}
-                onMouseEnter={() => handleMouseEnter(category)}
-                onMouseLeave={handleMouseLeave}
-                className="text-uppercase text-secondary category-link-with-icon text-black"
-              >
-                {/* Display category image */}
-                <div>
-                  {categoryImages[category] && (
-                    <img
-                      src={categoryImages[category]}
-                      alt={category}
-                      className="category-icon"
-                    />
-                  )}
-                  {category}
-                </div>
-                <span className="right-icon">
-                  <i className="fa fa-chevron-right"></i>
-                </span>
-              </Nav.Link>
-            ))}
+            {allCategories.length > 0 ? (
+              allCategories.map((category) => (
+                <Nav.Link
+                  key={category.id}
+                  eventKey={category.name}
+                  onMouseEnter={() => handleMouseEnter(category)}
+                  onMouseLeave={handleMouseLeave}
+                  className="text-uppercase text-secondary category-link-with-icon text-black"
+                >
+                  <div>
+                    {category.image && (
+                      <img
+                        src={`${category.image}`}
+                        alt={category.name}
+                        className="category-icon"
+                      />
+                    )}
+                    {category.name}
+                  </div>
+                  <span className="right-icon">
+                    <i className="fa fa-chevron-right"></i>
+                  </span>
+                </Nav.Link>
+              ))
+            ) : (
+              <p className="p-3 text-center text-muted">No categories found.</p>
+            )}
           </Nav>
         </Col>
 
-        {/* Offcanvas for Categories on small screens */}
         <Offcanvas
           show={showOffcanvas}
           onHide={handleOffcanvasClose}
@@ -128,81 +198,130 @@ const HeroSection2 = () => {
           </Offcanvas.Header>
           <Offcanvas.Body>
             <Nav className="flex-column">
-              {Object.keys(subCategoriesData).map((category) => (
-                <div key={category}>
-                  <Nav.Link
-                    onClick={() => {
-                      if (activeCategory === category && showSubCategories) {
-                        setShowSubCategories(false);
-                        setActiveCategory(null);
-                      } else {
-                        setShowSubCategories(true);
-                        setActiveCategory(category);
-                      }
-                    }}
-                    className="text-uppercase text-secondary category-link-with-icon"
-                  >
-                    {/* Display category image in offcanvas */}
-                    {categoryImages[category] && (
-                      <img
-                        src={categoryImages[category]}
-                        alt={category}
-                        className="category-icon"
-                      />
+              {allCategories.length > 0 ? (
+                allCategories.map((category) => (
+                  <div key={category.id}>
+                    <Nav.Link
+                      onClick={() => handleOffcanvasCategoryClick(category)}
+                      className="text-uppercase text-secondary category-link-with-icon"
+                    >
+                      {category.image && (
+                        <img
+                          src={`${category.image}`}
+                          alt={category.name}
+                          className="category-icon"
+                        />
+                      )}
+                      {category.name}
+                    </Nav.Link>
+                    {showSubCategories && activeCategoryId === category.id && (
+                      <div className="offcanvas-sub-categories ps-3 pb-2">
+                        {loadingSubCategories ? (
+                          <div className="d-flex justify-content-center py-2">
+                            <Spinner animation="border" size="sm" />
+                          </div>
+                        ) : subCategoriesError ? (
+                          <Alert variant="danger" className="py-1 px-2 m-0">
+                            Error: {subCategoriesError}
+                          </Alert>
+                        ) : subCategories.length > 0 ? (
+                          subCategories.map((subCat) => (
+                            <Nav.Link
+                              key={subCat.id}
+                              href="#"
+                              className="text-muted"
+                            >
+                              {subCat.name}
+                            </Nav.Link>
+                          ))
+                        ) : (
+                          <p className="text-muted ps-3 mb-0">
+                            No subcategories.
+                          </p>
+                        )}
+                      </div>
                     )}
-                    {category}
-                  </Nav.Link>
-                  {showSubCategories && activeCategory === category && (
-                    <div className="offcanvas-sub-categories ps-3 pb-2">
-                      {subCategoriesData[activeCategory]?.map((subCat) => (
-                        <Nav.Link key={subCat} href="#" className="text-muted">
-                          {subCat}
-                        </Nav.Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
+                  </div>
+                ))
+              ) : (
+                <p className="p-3 text-center text-muted">
+                  No categories found.
+                </p>
+              )}
             </Nav>
           </Offcanvas.Body>
         </Offcanvas>
 
-        {/* Main Content Area (Subcategories or Carousel) */}
         <Col xs={12} lg={9} className="p-0">
           {showSubCategories && activeCategory && !showOffcanvas ? (
-            <div className="sub-category-container d-none d-lg-block">
+            <div
+              className="sub-category-container d-none d-lg-block"
+              onMouseLeave={handleMouseLeave}
+              onMouseEnter={() => setShowSubCategories(true)}
+            >
               <h4>Subcategories for {activeCategory}</h4>
               <Nav className="flex-column">
-                {subCategoriesData[activeCategory]?.map((subCat) => (
-                  <Nav.Link key={subCat} href="#">
-                    {subCat}
-                  </Nav.Link>
-                ))}
+                {loadingSubCategories ? (
+                  <div className="d-flex justify-content-center py-5">
+                    <Spinner animation="border" />
+                  </div>
+                ) : subCategoriesError ? (
+                  <Alert variant="danger" className="mx-3 mt-3">
+                    Error loading subcategories: {subCategoriesError}
+                  </Alert>
+                ) : subCategories.length > 0 ? (
+                  subCategories.map((subCat) => (
+                    <Nav.Link key={subCat.id} href="#">
+                      {subCat.name}
+                    </Nav.Link>
+                  ))
+                ) : (
+                  <p className="p-3 text-muted">
+                    No subcategories found for {activeCategory}.
+                  </p>
+                )}
               </Nav>
             </div>
           ) : (
             <Carousel className="carousel">
-              <Carousel.Item>
-                <img
-                  className="d-block w-100"
-                  src={carousel1}
-                  alt="First slide"
-                />
-              </Carousel.Item>
-              <Carousel.Item>
-                <img
-                  className="d-block w-100"
-                  src={carousel2}
-                  alt="Second slide"
-                />
-              </Carousel.Item>
-              <Carousel.Item>
-                <img
-                  className="d-block w-100"
-                  src={carousel3}
-                  alt="Third slide"
-                />
-              </Carousel.Item>
+              {/* Dynamically render carousel items from firstBanner */}
+              {firstBanner && firstBanner.length > 0 ? (
+                firstBanner.map((banner) => (
+                  <Carousel.Item key={banner.id}>
+                    {/* Make sure banner.image contains the full URL if not already processed */}
+                    <a
+                      href={
+                        banner.type === "ad" && banner.url
+                          ? banner.url
+                          : banner.type === "product" && banner.product_id
+                          ? `/product/${banner.product_id}` // Adjust your product URL structure
+                          : "#"
+                      }
+                      target={banner.type === "ad" ? "_blank" : "_self"}
+                      rel="noopener noreferrer"
+                    >
+                      <img
+                        className="d-block w-100"
+                        src={banner.image} // firstBanner items should already have full image URLs
+                        alt={`Banner ${banner.id}`}
+                      />
+                    </a>
+                  </Carousel.Item>
+                ))
+              ) : (
+                // Fallback or placeholder if no banners are available
+                <Carousel.Item>
+                  <img
+                    className="d-block w-100 carousel-image"
+                    src="https://via.placeholder.com/900x400?text=No+Banners+Available" // Placeholder image
+                    alt="No banners"
+                  />
+                  <Carousel.Caption>
+                    <h3>No Banners Available</h3>
+                    <p>Please check back later.</p>
+                  </Carousel.Caption>
+                </Carousel.Item>
+              )}
             </Carousel>
           )}
         </Col>
@@ -212,3 +331,4 @@ const HeroSection2 = () => {
 };
 
 export default HeroSection2;
+

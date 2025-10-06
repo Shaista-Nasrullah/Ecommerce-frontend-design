@@ -234,6 +234,7 @@
   z-index: 10;
 }
 
+
 /* Media Queries for Responsiveness */
 @media (max-width: 991px) {
   .product-display-flash-deal-row {

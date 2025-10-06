@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react"; // Import useEffect
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import "./pageForBrands.css";
@@ -6,24 +6,52 @@ import "./pageForBrands.css";
 const Brands = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const [pageLoading, setPageLoading] = useState(true);
+  const [pageError, setPageError] = useState(null);
 
-  const { brands, loading, error } = useContext(AppContext);
+  // Destructure brands (from global state) and the fetch function (memoized)
+  const { allBrands, fetchBrandsData, IMAGE_BASE_URL } = useContext(AppContext); // Add IMAGE_BASE_URL
 
-  if (loading) {
-    return <div className="brands-section-container">Loading brands...</div>;
-  }
+  // useEffect to fetch brands when this component mounts
+  useEffect(() => {
+    // Call the specific fetch function for brands, passing component's loading/error setters
+    fetchBrandsData(setPageLoading, setPageError);
+  }, [fetchBrandsData]); // Dependency array: ensure it runs once on mount, as fetchBrandsData is memoized
 
-  if (error) {
+  // --- Conditional Rendering for Loading and Error States ---
+  if (pageLoading) {
     return (
-      <div className="brands-section-container">
-        Error loading brands: {error.message}
-        <p>Please check your network connection and API endpoint.</p>
+      <div className="fullBrandPage">
+        <div className="brand-page-container">
+          <p>Loading all brands...</p>
+        </div>
       </div>
     );
   }
 
-  if (brands.length === 0) {
-    return <div className="brands-section-container">No brands found.</div>;
+  if (pageError) {
+    return (
+      <div className="fullBrandPage">
+        <div className="brand-page-container error-message">
+          <p>Error loading brands: {pageError.message}</p>
+          <p>Please try again later.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle cases where no brands are found after loading
+  // (Note: The `brands` state might be empty initially before fetch completes,
+  // but `pageLoading` handles that. This check is for when the API returns an empty array.)
+  if (allBrands.length === 0 && !pageLoading) {
+    // Ensure it's not still loading
+    return (
+      <div className="fullBrandPage">
+        <div className="brand-page-container">
+          <p>No brands found.</p>
+        </div>
+      </div>
+    );
   }
 
   const handleSearchChange = (event) => {
@@ -33,16 +61,14 @@ const Brands = () => {
   const handleSearchSubmit = (event) => {
     event.preventDefault();
     console.log("Search submitted for brands:", searchQuery);
-    // You might want to filter the displayed brands here based on searchQuery
+    // Filtering is done below in filteredBrands
   };
 
   const handleBrandClick = (brandId) => {
-    // You can navigate to a brand-specific page if needed
-    // For now, let's just log it or navigate to a generic products-by-brand page
     navigate(`/products/brand/${brandId}`);
   };
 
-  const filteredBrands = brands.filter((brand) =>
+  const filteredBrands = allBrands.filter((brand) =>
     brand.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -51,12 +77,10 @@ const Brands = () => {
       <div className="brand-page-container">
         <div className="brand-header-section">
           <div className="brand-info">
-            <h2 className="brand-title-page">BRANDS</h2>{" "}
-            {/* Specific class name */}
+            <h2 className="brand-title-page">BRANDS</h2>
             <p className="brand-subtitle-page">
               Explore all our trusted brands
-            </p>{" "}
-            {/* Specific class name */}
+            </p>
           </div>
           <form
             className="brand-search-bar-container"
@@ -89,43 +113,50 @@ const Brands = () => {
           </form>
         </div>
 
-        {filteredBrands.length === 0 && (
+        {/* Display message if no brands match the search query */}
+        {filteredBrands.length === 0 && searchQuery !== "" && (
           <div className="brand-no-brands-found">
             No brands found matching "{searchQuery}".
           </div>
         )}
+        {/* Display message if no brands are available at all (after loading) */}
+        {filteredBrands.length === 0 && searchQuery === "" && (
+          <div className="brand-no-brands-found">No brands available.</div>
+        )}
 
         <div className="brand-grid-page">
-          {" "}
-          {/* Specific class name for page grid */}
           {filteredBrands.map((brand) => (
             <div
               key={brand.id}
-              className="brand-card-page" // Specific class name for page card
+              className="brand-card-page"
               onClick={() => handleBrandClick(brand.id)}
             >
               <div className="brand-icon-wrapper-page">
-                {" "}
-                {/* Specific class name */}
                 {brand.image ? (
                   <img
                     src={brand.image}
                     alt={brand.name}
-                    className="brand-icon-page" // Specific class name
+                    className="brand-icon-page"
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = "https://via.placeholder.com/40"; // Fallback image
+                      e.target.src = `${IMAGE_BASE_URL}assets/placeholder-image.png`; // Use IMAGE_BASE_URL
                       console.error(
                         `Failed to load image for ${brand.name}: ${brand.image}`
                       );
                     }}
                   />
                 ) : (
-                  <div className="brand-icon-placeholder-page"></div> // Specific class name
+                  // Placeholder for missing image property from API
+                  <div className="brand-icon-placeholder-page">
+                    <img
+                      src={`${IMAGE_BASE_URL}assets/placeholder-image.png`} // Use IMAGE_BASE_URL for placeholder
+                      alt="Placeholder"
+                      className="brand-icon-page"
+                    />
+                  </div>
                 )}
               </div>
-              <p className="brand-name-page">{brand.name}</p>{" "}
-              {/* Specific class name */}
+              <p className="brand-name-page">{brand.name}</p>
             </div>
           ))}
         </div>

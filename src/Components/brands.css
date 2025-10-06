@@ -84,7 +84,7 @@
 
 .brand-image-home {
   /* Specific class for home page brand image */
-  width: 90%; /* Adjust image size within the circle */
+  width: 130px; /* Adjust image size within the circle */
   height: 65%; /* Adjust image size within the circle */
   background-size: cover;
   border-radius: 50%;

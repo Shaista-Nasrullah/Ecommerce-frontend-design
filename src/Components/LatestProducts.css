@@ -4,6 +4,33 @@
   margin: 0 auto;
 }
 
+/* --- New styles for second banner images --- */
+.second-banner-scroll-container {
+  display: flex; /* Arrange images side-by-side */
+  overflow-x: scroll; /* Enable horizontal scrolling */
+  scroll-snap-type: x mandatory; /* Snap to individual images */
+  -webkit-overflow-scrolling: touch; /* For smoother scrolling on iOS */
+  margin-bottom: 20px; /* Space below this banner section */
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+}
+
+/* Hide scrollbar for Webkit browsers (Chrome, Safari) */
+.second-banner-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.second-banner-image {
+  flex: 0 0 100%; /* Each image takes 100% of the container's width */
+  width: 100%; /* Ensure it spans the full width */
+  height: 250px; /* Fixed height for consistency, adjust as needed */
+  object-fit: cover; /* Cover the area, cropping if necessary */
+  scroll-snap-align: start; /* Snap to the start of each image */
+  border-radius: 8px; /* Added for a softer look */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added for depth */
+  margin-right: 0; /* No margin between images as they take full width */
+}
+
 /* --- Container for Deal of the Month and Latest Products --- */
 .containerOfDeal {
   display: flex;
@@ -132,15 +159,17 @@
   margin-bottom: 20px;
 }
 
-/* --- One image in one row --- */
+/* Removed section-image styling */
+/*
 .section-image {
-  width: 100%; /* Image takes full width of its parent */
-  height: auto; /* Maintain aspect ratio */
-  display: block; /* Remove extra space below image */
-  margin-bottom: 20px; /* Space below the image */
-  border-radius: 8px; /* Added for a softer look */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added for depth */
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+*/
 
 .LatestProducts-title {
   font-size: 1.8em;
@@ -258,9 +287,9 @@
     grid-template-columns: repeat(3, 1fr); /* 3 columns for iPad */
   }
 
-  .sectionWithTwoImages {
-    overflow-x: hidden; /* No scroll needed on tablet */
-  }
+  /* No changes needed for second-banner-scroll-container on tablet,
+     as it's already set to take full width and scroll horizontally
+     if there are more images. */
 }
 
 /* Mobile view */
@@ -319,6 +348,11 @@
     font-size: 1em;
   }
 
+  /* Ensure the new second banner also behaves well on mobile */
+  .second-banner-image {
+    height: 180px; /* Adjust height for mobile */
+  }
+
   .sectionWithTwoImages {
     overflow-x: auto; /* Enable horizontal scroll */
     white-space: nowrap; /* Prevent images from wrapping */
@@ -339,10 +373,3 @@
     scroll-snap-align: start;
   }
 }
-
-
-/* @media (max-width: 480px) {
-  .LatestProducts-grid {
-    grid-template-columns: 1fr; 
-  }
-} */

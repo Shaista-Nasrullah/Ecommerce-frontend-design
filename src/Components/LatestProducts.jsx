@@ -1,15 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./LatestProducts.css";
-
-import LatestProduct1 from "../Components/Assets/latestProduct1.png";
-import LatestProduct2 from "../Components/Assets/latestProduct2.png";
-import LatestProduct3 from "../Components/Assets/latestProduct3.png";
-import LatestProduct4 from "../Components/Assets/latestProduct4.png";
-import LatestProduct5 from "../Components/Assets/latestProduct5.png";
-import LatestProduct6 from "../Components/Assets/latestProduct6.png";
-import LatestProduct7 from "../Components/Assets/latestProduct7.png";
-import LatestProduct8 from "../Components/Assets/latestProduct8.png";
-import sectionImage from "../Components/Assets/sectionWithOneImage.png";
+import { AppContext } from "../context/AppContext";
+// Removed sectionImage import as it will be replaced
+// import sectionImage from "../Components/Assets/sectionWithOneImage.png";
 import sectionImageOne from "../Components/Assets/sectionWithTwoImages1.png";
 import sectionImageTwo from "../Components/Assets/sectionWithTwoImages2.png";
 
@@ -17,48 +10,34 @@ import sectionImageTwo from "../Components/Assets/sectionWithTwoImages2.png";
 import dealOfTheMonthImage from "../Components/Assets/DealOfTheDay.png"; // Make sure to replace this with your actual image path
 
 const LatestProducts = () => {
-  const products = [
-    {
-      name: "Edelbrock Cylinder Head",
-      price: "$900.00",
-      image: LatestProduct1,
-    },
-    {
-      name: "Combo Trailer Light Set",
-      price: "$35.00",
-      image: LatestProduct2,
-    },
-    {
-      name: "Waterproof Seat Protector",
-      price: "$25.00",
-      image: LatestProduct3,
-    },
-    {
-      name: "HP BOSS CRATE ENGINE",
-      price: "$2,600.00",
-      image: LatestProduct4,
-    },
-    {
-      name: "Car Interior LED Lights",
-      price: "$30.00",
-      image: LatestProduct5,
-    },
-    {
-      name: "Lug White Spoke Wheel",
-      price: "$80.00",
-      image: LatestProduct6,
-    },
-    {
-      name: "Storage Large Tool Box",
-      price: "$60.00",
-      image: LatestProduct7,
-    },
-    {
-      name: "Daily Maintenance Hardware",
-      price: "$50.00",
-      image: LatestProduct8,
-    },
-  ];
+  const { latests, loading, error, secondBanner } = useContext(AppContext); // Destructure secondBanner
+
+  if (loading) {
+    return (
+      <div className="categories-section-container">Loading categories...</div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="categories-section-container">
+        Error loading categories: {error.message}
+        <p>Please check your network connection and API endpoint.</p>
+        <p>
+          If you see a CORS error in the console, your API needs to be
+          configured to allow requests from your frontend's origin.
+        </p>
+      </div>
+    );
+  }
+
+  // Check homePageCategories length (adjusting for latests as it's the primary product list here)
+  if (latests.length === 0 && secondBanner.length === 0) {
+    // Also check secondBanner
+    return (
+      <div className="categories-section-container">No content found.</div>
+    );
+  }
 
   // Deal of the Month data
   const dealProduct = {
@@ -71,11 +50,19 @@ const LatestProducts = () => {
 
   return (
     <section className="LatestProducts-section">
-      {/* Moved the section-image inside the containerOfDeal or removed if it's not part of the two-column layout */}
-      {/* If sectionImage is supposed to be a full-width banner above everything, keep it here */}
-      <div>
-        <img src={sectionImage} alt="SectionOne" className="section-image" />
-      </div>
+      {/* New section for horizontally scrollable secondBanner images */}
+      {secondBanner.length > 0 && (
+        <div className="second-banner-scroll-container">
+          {secondBanner.map((banner, index) => (
+            <img
+              key={index}
+              src={banner.image} // Assuming feature_image holds the URL
+              alt={`Banner ${index + 1}`}
+              className="second-banner-image"
+            />
+          ))}
+        </div>
+      )}
 
       <div className="containerOfDeal">
         {/* Deal of the Month Section */}
@@ -111,11 +98,11 @@ const LatestProducts = () => {
           </div>
 
           <div className="LatestProducts-grid">
-            {products.map((product, index) => (
+            {latests.map((product, index) => (
               <div className="LatestProducts-card" key={index}>
                 <div className="LatestProducts-image-container">
                   <img
-                    src={product.image}
+                    src={product.feature_image}
                     alt={product.name}
                     className="LatestProducts-image"
                   />
@@ -128,21 +115,16 @@ const LatestProducts = () => {
         </div>
       </div>
 
-      {/* Moved the single section-image here if it's meant to be below the main two-column layout */}
-      {/* <div>
-        <img src={sectionImage} alt="SectionOne" className="section-image" />
-      </div> */}
-
       <div className="sectionWithTwoImages">
         <img
           src={sectionImageOne}
           alt="SectionOne"
-          className="section-image-two" // Changed to section-image-two for consistency, ensure CSS is updated
+          className="section-image-two"
         />
         <img
           src={sectionImageTwo}
           alt="SectionTwo"
-          className="section-image-two" // Changed to section-image-two
+          className="section-image-two"
         />
       </div>
     </section>

@@ -1,41 +1,49 @@
-
-
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Categories.css";
 import { AppContext } from "../context/AppContext";
 
-const Categories = () => {
+const AllCategoriesPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const [pageLoading, setPageLoading] = useState(true);
+  const [pageError, setPageError] = useState(null);
 
-  const { categories, loading, error } = useContext(AppContext);
+  // Destructure allCategories (from global state) and the fetch function (memoized)
+  // Changed `categories` to `allCategories` and `fetchCategoriesData` to `fetchAllCategoriesData`
+  const { allCategories, fetchAllCategoriesData, IMAGE_BASE_URL } =
+    useContext(AppContext);
 
-  if (loading) {
+  useEffect(() => {
+    // When this component mounts, fetch all categories specifically for this page
+    // This will now only run once because fetchAllCategoriesData is memoized
+    fetchAllCategoriesData(setPageLoading, setPageError);
+  }, [fetchAllCategoriesData]); // Dependency array: now stable, runs once on mount
+
+  if (pageLoading) {
     return (
-      <div className="cat-page-container">
-        <div className="cat-loading-message">Loading categories...</div>
+      <div className="all-categories-page-container">
+        <p>Loading all categories...</p>
       </div>
     );
   }
 
-  if (error) {
+  if (pageError) {
     return (
-      <div className="cat-page-container">
-        <div className="cat-error-message">
-          Error loading categories: {error.message}
-          <p>Please check your network connection and API endpoint.</p>
-          <p>
-            If you see a CORS error in the console, your API needs to be
-            configured to allow requests from your frontend's origin.
-          </p>
-        </div>
+      <div className="all-categories-page-container error-message">
+        <p>Error loading all categories: {pageError.message}</p>
+        <p>Please try again later.</p>
       </div>
     );
   }
 
-  if (categories.length === 0) {
-    return <div>There are no categories to display</div>;
+  // Check allCategories length
+  if (allCategories.length === 0) {
+    return (
+      <div className="all-categories-page-container">
+        <p>No categories found.</p>
+      </div>
+    );
   }
 
   const handleSearchChange = (event) => {
@@ -45,6 +53,7 @@ const Categories = () => {
   const handleSearchSubmit = (event) => {
     event.preventDefault();
     console.log("Search submitted for:", searchQuery);
+    // You might want to filter categories or trigger a new search API call here
   };
 
   // Function to handle category card click
@@ -52,7 +61,8 @@ const Categories = () => {
     navigate(`/categories/${categoryId}`); // Navigate to the subcategory page
   };
 
-  const filteredCategories = categories.filter((category) =>
+  // Filter based on allCategories
+  const filteredCategories = allCategories.filter((category) =>
     category.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -95,9 +105,14 @@ const Categories = () => {
           </form>
         </div>
 
-        {filteredCategories.length === 0 && (
+        {filteredCategories.length === 0 && searchQuery !== "" && (
           <div className="cat-no-categories-found">
             No categories found matching "{searchQuery}".
+          </div>
+        )}
+        {filteredCategories.length === 0 && searchQuery === "" && (
+          <div className="cat-no-categories-found">
+            No categories available.
           </div>
         )}
 
@@ -106,7 +121,7 @@ const Categories = () => {
             <div
               key={category.id}
               className="cat-card"
-              onClick={() => handleCategoryClick(category.id)} // Add onClick handler here
+              onClick={() => handleCategoryClick(category.id)}
             >
               <div className="cat-icon-wrapper">
                 {category.image ? (
@@ -115,15 +130,21 @@ const Categories = () => {
                     alt={category.name}
                     className="cat-icon"
                     onError={(e) => {
-                      e.target.onerror = null; // prevents infinite loop
-                      e.target.src = "https://via.placeholder.com/40"; // Fallback image
+                      e.target.onerror = null;
+                      e.target.src = `${IMAGE_BASE_URL}assets/placeholder-image.png`;
                       console.error(
                         `Failed to load image for ${category.name}: ${category.image}`
                       );
                     }}
                   />
                 ) : (
-                  <div className="cat-icon-placeholder"></div> // Placeholder for missing image
+                  <div className="cat-icon-placeholder">
+                    <img
+                      src={`${IMAGE_BASE_URL}assets/placeholder-image.png`}
+                      alt="Placeholder"
+                      className="cat-icon"
+                    />
+                  </div>
                 )}
               </div>
               <p className="cat-name">{category.name}</p>
@@ -135,4 +156,4 @@ const Categories = () => {
   );
 };
 
-export default Categories;
+export default AllCategoriesPage;

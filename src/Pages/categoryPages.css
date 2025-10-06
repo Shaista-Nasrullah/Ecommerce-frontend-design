@@ -333,6 +333,36 @@
   width: 35px;
 }
 
+/* For Webkit browsers (Chrome, Safari) */
+.categories-list-scrollable::-webkit-scrollbar,
+.brands-list-scrollable::-webkit-scrollbar {
+  width: 2px; /* Make the scrollbar thinner */
+}
+
+.categories-list-scrollable::-webkit-scrollbar-track,
+.brands-list-scrollable::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Light background for the track */
+  border-radius: 4px;
+}
+
+.categories-list-scrollable::-webkit-scrollbar-thumb,
+.brands-list-scrollable::-webkit-scrollbar-thumb {
+  background: #888; /* Default color of the scrollbar thumb */
+  border-radius: 4px;
+}
+
+.categories-list-scrollable::-webkit-scrollbar-thumb:hover,
+.brands-list-scrollable::-webkit-scrollbar-thumb:hover {
+  background: #ff7f00; /* Orange color on hover */
+}
+
+/* For Firefox (using standard scrollbar-width and scrollbar-color) */
+.categories-list-scrollable,
+.brands-list-scrollable {
+  scrollbar-width: thin; /* "auto" or "none" */
+  scrollbar-color: #888 #f1f1f1; /* thumb color track color */
+}
+
 @media (max-width: 991px) {
   .sort-by-containerr {
     display: none;
