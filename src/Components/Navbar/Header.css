@@ -240,7 +240,7 @@
   color: white;
   display: flex;
   align-items: center;
-  padding: 10px 20px;
+  padding: 10px 2px;
   max-width: 1200px; /* Adjust as needed */
   margin: 0 auto;
 }

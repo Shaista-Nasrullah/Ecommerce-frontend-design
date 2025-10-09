@@ -10,7 +10,8 @@ const AppContextProvider = (props) => {
   const HOME_API_URL = "/api/home/data";
   const CATEGORIES_API_ALL = "/api/categories/all";
   const BRANDS_API_ALL = "/api/brands/all";
-  const SUBCATEGORIES_API_BASE = "/api/categories/sub"; // Base URL for subcategories
+  const SUBCATEGORIES_API_BASE = "/api/categories/sub";
+  const SINGLE_PRODUCT_API_BASE = "/api/products";
 
   const [loading, setLoading] = useState(true); // General loading for initial homepage data
   const [error, setError] = useState(null); // General error for initial homepage data
@@ -37,6 +38,24 @@ const AppContextProvider = (props) => {
           ? `${IMAGE_BASE_URL}${item.feature_image}`
           : null,
       }));
+    },
+    [IMAGE_BASE_URL]
+  );
+
+  // Helper function for single product image processing
+  const processProductImage = useCallback(
+    (product) => {
+      if (!product) return null;
+      return {
+        ...product,
+        feature_image: product.feature_image
+          ? `${IMAGE_BASE_URL}${product.feature_image}`
+          : null,
+        // If there's an 'images' array for multiple product images, process them too
+        images: product.images
+          ? product.images.map((img) => `${IMAGE_BASE_URL}${img}`)
+          : [],
+      };
     },
     [IMAGE_BASE_URL]
   );
@@ -223,6 +242,46 @@ const AppContextProvider = (props) => {
     [SUBCATEGORIES_API_BASE, processItemsWithImage]
   );
 
+  // --- 5. Fetch Single Product by ID ---
+  const fetchProductById = useCallback(
+    async (productId, setComponentLoading, setComponentError) => {
+      setComponentLoading(true);
+      setComponentError(null);
+      console.log(`Attempting to fetch product with ID: ${productId}`);
+      try {
+        const response = await axios.get(
+          `${SINGLE_PRODUCT_API_BASE}/${productId}`
+        );
+        console.log("Single Product API Response Status:", response.status);
+        console.log("Single Product API Response Data:", response.data);
+
+        if (response.data) {
+          const productWithFullImageUrls = processProductImage(response.data);
+          console.log("Product fetched successfully.");
+          return productWithFullImageUrls;
+        } else {
+          throw new Error("API response for single product is empty.");
+        }
+      } catch (err) {
+        console.error(
+          `Failed to fetch product with ID ${productId}. Full error object:`,
+          err
+        );
+        setComponentError(
+          new Error(
+            `Failed to load product with ID ${productId}: ${err.message}`
+          )
+        );
+        toast.error(`Failed to load product with ID ${productId}.`);
+        return null; // Return null on error
+      } finally {
+        setComponentLoading(false);
+        console.log(`Finished fetching product with ID: ${productId}.`);
+      }
+    },
+    [SINGLE_PRODUCT_API_BASE, processProductImage]
+  );
+
   useEffect(() => {
     console.log(
       "AppContextProvider mounted. Initiating homepage data fetch..."
@@ -246,7 +305,8 @@ const AppContextProvider = (props) => {
     secondBanner,
     fetchAllCategoriesData,
     fetchBrandsData,
-    fetchSubCategoriesData, // Provide the new subcategories fetch function
+    fetchSubCategoriesData,
+    fetchProductById,
   };
 
   return (

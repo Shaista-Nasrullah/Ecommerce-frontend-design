@@ -145,8 +145,10 @@ const Header = () => {
             )}
           </div>
           <div className="action-item cart">
-            <i className="fa fa-shopping-cart"></i>
-            <span className="badge">0</span>
+            <a href="/cart">
+              <i className="fa fa-shopping-cart"></i>
+              <span className="badge">0</span>
+            </a>
           </div>
         </div>
       </div>
@@ -176,7 +178,7 @@ const Header = () => {
               <a href="/">Home</a>
             </li>
             <li>
-              <a href="/products">Products</a>
+              <a href="/shop">Products</a>
             </li>
             <li>
               <a href="#offers">

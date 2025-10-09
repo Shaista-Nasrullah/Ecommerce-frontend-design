@@ -1,0 +1,104 @@
+.scrollable-wrapper {
+  background-color: #ecf5ff;
+  margin: 20px 0px;
+  border-radius: 8px;
+  overflow-x: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  /* For Webkit browsers (Chrome, Safari), you'll need a pseudo-element below */
+}
+
+.scrollable-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.section-before-footer-container {
+  display: flex;
+  align-items: center;
+  height: 238px;
+  min-width: 100%;
+  margin: 20px 0px;
+  padding: 20px 40px;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.each-box {
+  min-width: 25%; /* Give each box a minimum width to ensure they don't shrink too much */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 20px; /* Add some horizontal padding to the boxes */
+  position: relative; /* Needed for pseudo-element divider */
+}
+
+/* Add vertical divider using a pseudo-element */
+.each-box + .each-box::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0%;
+  height: 100%;
+  width: 1px;
+  background-color: #b1c9e9;
+}
+
+.each-box p {
+  font-size: 14px;
+  color: #262d34;
+  text-align: center; /* Center the text within the box */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .section-before-footer-container {
+    padding: 10px 20px;
+    height: auto; /* Allow height to adjust based on content */
+  }
+
+  .each-box {
+    min-width: 200px; /* Adjust min-width for smaller screens */
+    padding: 10px;
+  }
+
+  .each-box + .each-box::before {
+    top: 20%;
+    height: 60%;
+  }
+}
+
+@media (max-width: 480px) {
+  .scrollable-wrapper {
+    margin: 20px 0px;
+  }
+  .section-before-footer-container {
+    padding: 1px 0px;
+  }
+  .each-box {
+    min-width: 175px;
+  }
+}
+
+/* .section-before-footer-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  background-color: #ecf5ff;
+  height: 238px;
+  width: 1200px;
+  margin: 20px 0px;
+  padding: 40px;
+  border-radius: 8px;
+}
+
+.each-box {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.each-box p {
+  font-size: 14px;
+  color: #262d34;
+} */

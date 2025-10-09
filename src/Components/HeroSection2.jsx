@@ -142,20 +142,6 @@ const HeroSection2 = () => {
   return (
     <Container fluid className="HeroSection-container">
       <Row className="h-100">
-        <Col
-          xs={12}
-          className="d-lg-none p-2 d-flex align-items-center justify-content-between"
-        >
-          <Button
-            variant="outline-secondary"
-            onClick={handleOffcanvasShow}
-            className="menu-toggle-btn"
-          >
-            <List size={20} /> Categories
-          </Button>
-          <h5 className="m-0 hero-title-sm">Welcome!</h5>
-        </Col>
-
         <Col lg={3} className="menus p-0 d-none d-lg-block">
           <Nav defaultActiveKey="/home" className="flex-column">
             {allCategories.length > 0 ? (
@@ -331,4 +317,3 @@ const HeroSection2 = () => {
 };
 
 export default HeroSection2;
-

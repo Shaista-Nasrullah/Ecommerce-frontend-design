@@ -84,9 +84,10 @@
 
 .fd-product-image {
   max-width: 100%;
-  max-height: 110px; /* Adjust image height as needed */
+  max-height: 110px;
   display: block;
-  object-fit: contain; /* Ensures the whole image is visible without cropping */
+  object-fit: contain;
+  margin-left: 15px;
 }
 
 .fd-product-info {

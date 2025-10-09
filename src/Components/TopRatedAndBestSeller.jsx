@@ -1,17 +1,18 @@
 import React, { useContext } from "react";
-// import featuredProducts5 from "../Components/Assets/featured-product5.png";
-// import featuredProducts6 from "../Components/Assets/featured-product6.png";
-// import featuredProducts7 from "../Components/Assets/featured-product7.png";
-// import featuredProducts8 from "../Components/Assets/featured-product8.png";
-// import featuredProducts11 from "../Components/Assets/featured-product11.png";
-// import featuredProducts12 from "../Components/Assets/featured-product12.png";
 import "./TopRatedAndBestSeller.css";
 import { FaStar, FaTrophy } from "react-icons/fa";
 import { IoIosTimer } from "react-icons/io";
 import { AppContext } from "../context/AppContext";
+import { useNavigate } from "react-router-dom";
 
 const TopRatedAndBestSeller = () => {
   const { topRated, loading, error } = useContext(AppContext);
+  const navigate = useNavigate();
+
+  // NEW: Click handler for individual products
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
 
   if (loading) {
     return (
@@ -39,59 +40,6 @@ const TopRatedAndBestSeller = () => {
     );
   }
 
-  // const bestSellingProducts = [
-  //   {
-  //     id: 1,
-  //     name: "Straps Plaid Patchwork",
-  //     price: "$20.00",
-  //     image: featuredProducts11,
-  //     rating: 5,
-  //     reviews: 1,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "4 French Door",
-  //     price: "$2,484.00",
-  //     image: featuredProducts12,
-  //     rating: 5,
-  //     reviews: 2,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Leather Single Shoes",
-  //     price: "$32.00",
-  //     image: featuredProducts5,
-  //     rating: 5,
-  //     reviews: 1,
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Leather Ladies Bag",
-  //     price: "$15.00",
-  //     image: featuredProducts6,
-  //     rating: 5,
-  //     reviews: 2,
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "T900 Smart Watch",
-  //     originalPrice: "$30.00",
-  //     price: "$28.50",
-  //     discount: "-5%",
-  //     image: featuredProducts7,
-  //     rating: 5,
-  //     reviews: 1,
-  //   },
-  //   {
-  //     id: 6,
-  //     name: "Women Beautiful White",
-  //     price: "$70.00",
-  //     image: featuredProducts8,
-  //     rating: 4,
-  //     reviews: 1,
-  //   },
-  // ];
-
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 0; i < 5; i++) {
@@ -102,8 +50,12 @@ const TopRatedAndBestSeller = () => {
     return stars;
   };
 
-  const ProductCard = ({ product }) => (
-    <div className="product-card">
+  // NEW: Handler for "View All" Top Rated
+  const handleViewAllTopRated = () => {
+    navigate("/shop?section=top-rated");
+  };
+  const ProductCard = ({ product, onProductClick }) => (
+    <div className="product-card" onClick={() => onProductClick(product.id)}>
       <div className="product-image-container">
         {product.discount && (
           <div className="discount-badge">{product.discount}</div>
@@ -121,11 +73,20 @@ const TopRatedAndBestSeller = () => {
           {product.reviews > 0 && <span>({product.reviews})</span>}
         </div>
         <div className="product-price">
-          {product.originalPrice && (
-            <span className="original-price">{product.originalPrice}</span>
-          )}
-          <span className="current-price">{product.price}</span>
+          {product.variations && product.variations.length > 0
+            ? `PKR ${parseFloat(
+                product.variations[0].default_sell_price
+              ).toFixed(2)}`
+            : "N/A"}
         </div>
+        {/* <div className="product-price">
+          {product.variations.default_sell_price && (
+            <span className="original-price">1000</span>
+          )}
+          <span className="current-price">
+            {product.variations.default_sell_price}
+          </span>
+        </div> */}
       </div>
     </div>
   );
@@ -138,11 +99,17 @@ const TopRatedAndBestSeller = () => {
             <FaTrophy className="icon" />
             <p>Best sellings</p>
           </div>
-          <button className="view-all-btn">View All</button>
+          <button className="view-all-btn" onClick={handleViewAllTopRated}>
+            View All
+          </button>
         </div>
         <div className="products-grid">
           {topRated.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard
+              key={product.id}
+              product={product}
+              onProductClick={handleProductClick}
+            />
           ))}
         </div>
       </div>
@@ -153,11 +120,17 @@ const TopRatedAndBestSeller = () => {
             <IoIosTimer className="icon" />
             <p>Top rated</p>
           </div>
-          <button className="view-all-btn">View All</button>
+          <button className="view-all-btn" onClick={handleViewAllTopRated}>
+            View All
+          </button>
         </div>
         <div className="products-grid">
           {topRated.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard
+              key={product.id}
+              product={product}
+              onProductClick={handleProductClick}
+            />
           ))}
         </div>
       </div>

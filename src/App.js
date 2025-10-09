@@ -12,6 +12,10 @@ import CategoryPages from "./Pages/categoryPages.jsx";
 import AllCategoriesPage from "./Pages/Categories.jsx";
 import SubCategories from "./Pages/SubCategories.jsx";
 import Brands from "./Pages/pageForBrands.jsx";
+import Information from "./Components/Navbar/Information.jsx";
+import MyProfile from "./Pages/MyProfile.jsx";
+import MyOrders from "./Pages/MyOrders.jsx";
+import MyCart from "./Pages/MyCart.jsx";
 
 function App() {
   return (
@@ -26,12 +30,16 @@ function App() {
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/product/:slug" element={<ProductDetail />} />
-          <Route path="/categoriesProducts" element={<CategoryPages />} />
+          <Route path="/product/:productId" element={<ProductDetail />} />
+          <Route path="/shop" element={<CategoryPages />} />
           <Route path="/categories" element={<AllCategoriesPage />} />
           <Route path="/categories/:id" element={<SubCategories />} />
           <Route path="/brands" element={<Brands />} />
+          <Route path="/profile" element={<MyProfile />} />
+          <Route path="/orders" element={<MyOrders />} />
+          <Route path="/cart" element={<MyCart />} />
         </Routes>
+        <Information />
         <Footer />
       </div>
     </BrowserRouter> // Close BrowserRouter here

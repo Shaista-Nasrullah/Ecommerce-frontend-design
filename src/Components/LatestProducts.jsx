@@ -1,27 +1,32 @@
+// LatestProducts.js
 import React, { useContext } from "react";
 import "./LatestProducts.css";
 import { AppContext } from "../context/AppContext";
-// Removed sectionImage import as it will be replaced
-// import sectionImage from "../Components/Assets/sectionWithOneImage.png";
 import sectionImageOne from "../Components/Assets/sectionWithTwoImages1.png";
 import sectionImageTwo from "../Components/Assets/sectionWithTwoImages2.png";
-
-// Assuming you have an image for the deal of the month, let's import it:
-import dealOfTheMonthImage from "../Components/Assets/DealOfTheDay.png"; // Make sure to replace this with your actual image path
+import dealOfTheMonthImage from "../Components/Assets/DealOfTheDay.png";
+import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const LatestProducts = () => {
-  const { latests, loading, error, secondBanner } = useContext(AppContext); // Destructure secondBanner
+  const { latests, loading, error, secondBanner } = useContext(AppContext);
+  const navigate = useNavigate();
+
+  // NEW: Click handler for individual products
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
 
   if (loading) {
     return (
-      <div className="categories-section-container">Loading categories...</div>
+      <div className="categories-section-container">Loading products...</div> // Changed text
     );
   }
 
   if (error) {
     return (
       <div className="categories-section-container">
-        Error loading categories: {error.message}
+        Error loading products: {error.message} {/* Changed text */}
         <p>Please check your network connection and API endpoint.</p>
         <p>
           If you see a CORS error in the console, your API needs to be
@@ -39,7 +44,12 @@ const LatestProducts = () => {
     );
   }
 
-  // Deal of the Month data
+  // NEW: Handler for "View All" Latest Products
+  const handleViewAllLatestProducts = () => {
+    navigate("/shop?section=latest-products");
+  };
+
+  // Deal of the Month data (static for now)
   const dealProduct = {
     name: "Exquisite 18K White Gold Diamond Necklace Set",
     originalPrice: "$2,400.00",
@@ -56,7 +66,7 @@ const LatestProducts = () => {
           {secondBanner.map((banner, index) => (
             <img
               key={index}
-              src={banner.image} // Assuming feature_image holds the URL
+              src={banner.image} // Assuming 'image' holds the URL for banners
               alt={`Banner ${index + 1}`}
               className="second-banner-image"
             />
@@ -92,14 +102,22 @@ const LatestProducts = () => {
         <div className="latest-products-main-content">
           <div className="LatestProducts-header">
             <h2 className="LatestProducts-title">Latest products</h2>
-            <a href="#" className="LatestProducts-viewAll">
-              View All <span className="LatestProducts-arrow">&gt;</span>
-            </a>
+            <Button
+              variant="link"
+              className="product-display-view-all-button"
+              onClick={handleViewAllLatestProducts}
+            >
+              View All
+            </Button>
           </div>
 
           <div className="LatestProducts-grid">
-            {latests.map((product, index) => (
-              <div className="LatestProducts-card" key={index}>
+            {latests.map((product) => (
+              <div
+                className="LatestProducts-card"
+                key={product.id}
+                onClick={() => handleProductClick(product.id)}
+              >
                 <div className="LatestProducts-image-container">
                   <img
                     src={product.feature_image}
@@ -108,7 +126,14 @@ const LatestProducts = () => {
                   />
                 </div>
                 <h3 className="LatestProducts-productName">{product.name}</h3>
-                <p className="LatestProducts-productPrice">{product.price}</p>
+                <p className="LatestProducts-productPrice">
+                  {/* Correctly extract and display price */}
+                  {product.variations && product.variations.length > 0
+                    ? `PKR ${parseFloat(
+                        product.variations[0].default_sell_price
+                      ).toFixed(2)}`
+                    : "N/A"}
+                </p>
               </div>
             ))}
           </div>

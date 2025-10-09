@@ -1,11 +1,11 @@
-import React from "react";
-import { Container, Row, Col, Button, Card } from "react-bootstrap";
+import React, { useEffect, useContext, useState } from "react";
+import { Container, Button } from "react-bootstrap";
 import "./ProductDetail.css";
 import lipstickImage from "../Components/Assets/lipstick.webp";
 import lipstickImage1 from "../Components/Assets/lipstick1.webp";
 import lipstickImage2 from "../Components/Assets/lipstick2.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus, faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import featuredProducts1 from "../Components/Assets/featured-product1.png";
 import featuredProducts2 from "../Components/Assets/featured-product2.png";
 import featuredProducts3 from "../Components/Assets/featured-product3.png";
@@ -19,6 +19,8 @@ import featuredProducts9 from "../Components/Assets/featured-product9.png";
 import featuredProducts10 from "../Components/Assets/featured-product10.png";
 import featuredProducts11 from "../Components/Assets/featured-product11.png";
 import featuredProducts12 from "../Components/Assets/featured-product12.png";
+import { AppContext } from "../context/AppContext";
+import { useParams } from "react-router-dom";
 
 const LatestProducts = [
   {
@@ -124,6 +126,66 @@ const featuredProducts = [
 ];
 
 const ProductDetail = () => {
+  const { fetchProductById } = useContext(AppContext);
+  const { productId } = useParams(); // Get the productId from the URL
+
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const getProductDetails = async () => {
+      if (!productId) {
+        setError(new Error("No product ID provided."));
+        setLoading(false);
+        // toast.error("Invalid product URL.");
+        console.log("No product ID provided.");
+        return;
+      }
+
+      const fetchedProduct = await fetchProductById(
+        productId,
+        setLoading,
+        setError
+      );
+      if (fetchedProduct) {
+        setProduct(fetchedProduct);
+      } else {
+        // fetchProductById already sets an error, but ensure product is null if fetch fails
+        setProduct(null);
+        console.log("Failed to load product details.");
+        // toast.error("Failed to load product details.");
+      }
+    };
+
+    getProductDetails();
+  }, [productId, fetchProductById]);
+
+  if (loading) {
+    return (
+      <Container className="product-detail-page mt-5">
+        <p className="text-center">Loading product details...</p>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container className="product-detail-page mt-5">
+        <p className="text-center text-danger">
+          Error: {error.message}. Please try again later.
+        </p>
+      </Container>
+    );
+  }
+
+  if (!product) {
+    return (
+      <Container className="product-detail-page mt-5">
+        <p className="text-center">Product not found.</p>
+      </Container>
+    );
+  }
   return (
     <>
       <div className="productDetailContainer">
@@ -131,7 +193,7 @@ const ProductDetail = () => {
           <div className="first-box">
             <div className="PDproduct-image-container">
               <div className="PDimage-container">
-                <img src={lipstickImage} alt="lipstick" />
+                <img src={product.feature_image} alt={product.name} />
               </div>
               <div className="images-below">
                 <div className="firstImage">
@@ -146,7 +208,7 @@ const ProductDetail = () => {
               </div>
             </div>
             <div className="ProductDetailInfo">
-              <h2>Beauty Jelly Lipstick</h2>
+              <h2>{product.name}</h2>
               <div className="orderAndWishlistContainer">
                 <p className="main">
                   <span className="figuresOfOrdersAndWishListed">2</span> Orders
@@ -157,7 +219,14 @@ const ProductDetail = () => {
                   WishListed
                 </p>
               </div>
-              <div className="PDproductPrice">$32.00</div>
+              <div className="PDproductPrice">
+                {" "}
+                {product.variations && product.variations.length > 0
+                  ? `PKR ${parseFloat(
+                      product.variations[0].default_sell_price
+                    ).toFixed(2)}`
+                  : "N/A"}
+              </div>
               <div className="quantityContainer">
                 <p className="Qty">Qty</p>
                 <div className="QtyIncreaseDecrease">
@@ -175,7 +244,12 @@ const ProductDetail = () => {
               </div>
               <div className="totalPrice">
                 <div className="PDproductPrice">
-                  <strong className="text">Total Price: </strong> $32.00
+                  <strong className="text">Total Price: </strong>{" "}
+                  {product.variations && product.variations.length > 0
+                    ? `PKR ${parseFloat(
+                        product.variations[0].default_sell_price
+                      ).toFixed(2)}`
+                    : "N/A"}
                 </div>
               </div>
               <div className="buttons">

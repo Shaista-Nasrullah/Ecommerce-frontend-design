@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Base URL for your API
 // const API_URL = "http://192.168.100.107:8000/api";
-const API_URL = "https://tdsonlinepk.alitechnosolutions.com/api";
+const API_URL = "/api";
 
 const authSlice = createSlice({
   name: "auth",

@@ -6,17 +6,19 @@ import FeaturedDeal from "../Components/FeaturedDeal";
 import TopRatedAndBestSeller from "../Components/TopRatedAndBestSeller";
 import LatestProducts from "../Components/LatestProducts";
 import Brands from "../Components/brands";
+import SectionBeforeFooter from "../Components/SectionBeforeFooter";
 
 const Home = () => {
   return (
     <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
       <HeroSection2 />
+      <FeaturedDeal />
       <NewComponent />
       <CategoriesSection />
-      <FeaturedDeal />
-      <TopRatedAndBestSeller />
       <LatestProducts />
+      <TopRatedAndBestSeller />
       <Brands />
+      <SectionBeforeFooter />
     </div>
   );
 };
