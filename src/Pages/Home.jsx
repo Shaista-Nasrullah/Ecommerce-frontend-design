@@ -1,5 +1,5 @@
 import React from "react";
-import HeroSection2 from "../Components/HeroSection2";
+import HeroSection from "../Components/HeroSection";
 import NewComponent from "../Components/NewComponent";
 import CategoriesSection from "../Components/Categories";
 import FeaturedDeal from "../Components/FeaturedDeal";
@@ -11,7 +11,7 @@ import SectionBeforeFooter from "../Components/SectionBeforeFooter";
 const Home = () => {
   return (
     <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-      <HeroSection2 />
+      <HeroSection />
       <FeaturedDeal />
       <NewComponent />
       <CategoriesSection />

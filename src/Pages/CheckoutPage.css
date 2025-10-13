@@ -1,0 +1,486 @@
+/* General Body and Container Styling */
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif; /* Using a more modern font */
+  background-color: #fafbfc; /* Lighter, subtle background */
+  color: #333;
+  line-height: 1.6;
+}
+
+.checkout-container {
+  display: flex;
+  gap: 10px;
+  max-width: 1100px; /* Slightly adjusted max-width */
+  margin: 40px auto; /* More vertical margin */
+  background-color: #ffffff;
+  border-radius: 12px; /* Softer rounded corners */
+  /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);  */
+  overflow: hidden;
+  /* border: 1px solid #e0e0e0;  */
+}
+
+/* Left Section: Form and Details */
+.checkout-form-section {
+  flex: 2.8;
+  padding: 50px;
+  background-color: #fafbfc;
+  /* border: 1px solid rgba(27, 127, 237, 0.1);
+  box-shadow: 0px 0px 2px rgba(0, 113, 220, 0.15); */
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px; /* Increased margin */
+}
+
+h3 {
+  font-size: 24px; /* Larger headings */
+  font-weight: 700; /* Bolder headings */
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #2c3e50; /* Darker heading color */
+}
+
+.log-in {
+  color: #1455ac;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.log-in:hover {
+  color: #007bff;
+}
+
+.delivery-section h3,
+.shipping-method-section h3,
+.payment-section h3,
+.section-header h3 {
+  /* color: red; */
+  font-size: 18px;
+  font-weight: 500;
+  color: #212629;
+}
+
+/* Input Fields and Selects */
+.input-field {
+  width: calc(100% - 24px); /* Account for padding */
+  padding: 14px 12px; /* More padding */
+  margin-bottom: 18px; /* More margin */
+  border: 1px solid #dcdfe6; /* Lighter border color */
+  border-radius: 8px; /* Softer corners */
+  font-size: 14px; /* Slightly larger font */
+  box-sizing: border-box;
+  background-color: #fefefe;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-field::placeholder {
+  color: #262d34cc; /* Softer placeholder color */
+}
+
+.input-field:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15); /* Softer focus shadow */
+}
+
+.city-postal-row {
+  display: flex;
+  gap: 18px; /* Increased gap */
+}
+
+.city-postal-row .input-field {
+  flex: 1;
+  width: auto;
+}
+
+/* Checkbox and Radio Button Styling */
+.checkbox-container,
+.radio-container {
+  display: block;
+  position: relative;
+  padding-left: 35px; /* More space for custom indicator */
+  margin-bottom: 20px; /* More margin */
+  cursor: pointer;
+  font-size: 16px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: #4a4a4a;
+}
+
+.checkbox-container input,
+.radio-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark,
+.radiomark {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  height: 22px; /* Larger indicator */
+  width: 22px; /* Larger indicator */
+  background-color: #ebf0f5; /* Light grey background */
+  border: 1px solid #ccd1d8;
+  border-radius: 6px; /* For checkbox */
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.radiomark {
+  border-radius: 50%; /* For radio button */
+}
+
+.checkbox-container input:checked ~ .checkmark {
+  background-color: #28a745; /* Vibrant green check */
+  border-color: #28a745;
+}
+
+.radio-container input:checked ~ .radiomark {
+  background-color: #1455ac; /* Primary blue radio */
+  border-color: #1455ac;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.radiomark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.radio-container input:checked ~ .radiomark:after {
+  display: block;
+}
+
+.checkbox-container .checkmark:after {
+  left: 7px;
+  top: 3px;
+  width: 6px; /* Slightly larger checkmark */
+  height: 12px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.radio-container .radiomark:after {
+  top: 6px;
+  left: 6px;
+  width: 10px; /* Larger radio dot */
+  height: 10px;
+  border-radius: 50%;
+  background: white;
+}
+
+/* Shipping Method Section */
+.shipping-method-section,
+.payment-section {
+  margin-top: 35px; /* More separation */
+  padding-top: 30px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.shipping-option,
+.payment-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px; /* More padding */
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 15px; /* More margin */
+  background-color: #fdfdfd;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.shipping-option.selected,
+.payment-option.selected {
+  border-color: #1455ac;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.shipping-option .radio-container,
+.payment-option .radio-container {
+  margin-bottom: 0;
+  flex-grow: 1;
+}
+
+.shipping-price {
+  font-weight: 600;
+  color: #555;
+  font-size: 16px;
+}
+
+/* Payment Section */
+.secure-text {
+  font-size: 14px;
+  color: #7a869a; /* Softer text color */
+  margin-top: -10px;
+  margin-bottom: 25px;
+}
+
+.pay-cod-button {
+  background-color: #ced4da; /* Muted grey */
+  color: #6c757d; /* Muted text */
+  border: none;
+  padding: 12px 18px; /* More padding */
+  border-radius: 6px;
+  cursor: not-allowed;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease;
+}
+
+.payment-details-form {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 10px;
+}
+
+.payment-details-form p {
+  margin-bottom: 10px;
+  font-size: 15px;
+  color: #495057;
+}
+
+.payment-details-form strong {
+  color: #212529;
+}
+
+/* Action Buttons */
+.complete-order-btn {
+  width: 100%;
+  padding: 10px; /* More padding */
+  background-color: #1455ac; /* Modern blue */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 19px; /* Slightly larger font */
+  font-weight: 700; /* Bolder font */
+  cursor: pointer;
+  margin-top: 40px; /* More separation */
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.complete-order-btn:hover {
+  background-color: #357bd8;
+  transform: translateY(-2px); /* Subtle lift effect */
+}
+
+.complete-order-btn:active {
+  transform: translateY(0);
+}
+
+/* Footer Links */
+.footer-links {
+  margin-top: 50px; /* More separation */
+  padding-top: 30px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px; /* More gap */
+}
+
+.footer-links a {
+  color: #1455ac;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* Right Section: Order Summary */
+.checkout-summary-section {
+  flex: 2.5;
+  padding: 20px;
+  height: max-content;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-top: 20px;
+  /* border: 1px solid rgba(27, 127, 237, 0.1);
+  box-shadow: 0px 0px 2px rgba(0, 113, 220, 0.15); */
+}
+
+.store-logo {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.store-logo img {
+  max-width: 200px; /* Larger logo */
+  height: auto;
+  border-radius: 8px; /* Soften logo corners */
+}
+.ecom-name {
+  color: #1455ac;
+  font-size: 20px;
+  font-weight: 500;
+  padding-top: 16px;
+}
+
+.cart-item-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid #e0e0e0;
+  margin-top: 20px;
+}
+
+.item-details {
+  display: flex;
+  align-items: center;
+  gap: 18px; /* Increased gap */
+}
+
+.item-image {
+  width: 70px; /* Larger image */
+  height: 70px; /* Larger image */
+  border-radius: 10px; /* Softer corners */
+  object-fit: cover;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.item-name {
+  font-weight: 600;
+  font-size: 17px; /* Slightly larger font */
+  color: #333;
+}
+
+.item-price {
+  font-weight: 700; /* Bolder price */
+  font-size: 17px;
+  color: #2c3e50;
+}
+
+.summary-details {
+  margin-top: 25px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px; /* More margin */
+  font-size: 16px;
+}
+
+.summary-row span:first-child {
+  color: #6c757d; /* Muted label color */
+}
+
+.summary-row span:last-child {
+  font-weight: 600;
+  color: #333;
+}
+
+.total-row {
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 1px solid #e0e0e0;
+  font-size: 22px; /* Larger total font */
+  font-weight: 800; /* Extra bold */
+}
+
+.total-row .total-amount {
+  color: #28a745; /* Green for total amount */
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .checkout-container {
+    flex-direction: column;
+    margin: 20px;
+  }
+
+  .checkout-form-section {
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 40px;
+  }
+
+  .checkout-summary-section {
+    padding: 40px;
+  }
+}
+
+@media (max-width: 576px) {
+  .checkout-form-section,
+  .checkout-summary-section {
+    padding: 25px;
+  }
+
+  h3 {
+    font-size: 20px;
+  }
+
+  .input-field,
+  .shipping-option,
+  .payment-option {
+    font-size: 15px;
+  }
+
+  .complete-order-button {
+    font-size: 17px;
+    padding: 15px;
+  }
+
+  .city-postal-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .footer-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .item-image {
+    width: 50px;
+    height: 50px;
+  }
+
+  .item-name,
+  .item-price {
+    font-size: 15px;
+  }
+
+  .total-row {
+    font-size: 18px;
+  }
+}

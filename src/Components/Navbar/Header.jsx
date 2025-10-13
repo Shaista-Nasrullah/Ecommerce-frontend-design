@@ -1,75 +1,68 @@
+// src/Components/Header/Header.jsx
 import React from "react";
 import logo from "../Assets/logo-in-nav.png";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUser, logout } from "../../slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import "./Header.css";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => {
-    console.log("Header: Redux state.auth.user:", state.auth.user); // Log the user data from Redux state
+    // console.log("Header: Redux state.auth.user:", state.auth.user); // Log the user data from Redux state
     return state.auth.user;
   });
+
+  // Select cart totalQuantity and totalAmount from the Redux store
+  const totalQuantity = useSelector((state) => state.cart.totalQuantity);
+  const totalAmount = useSelector((state) => state.cart.totalAmount);
+
   const navigate = useNavigate();
   const [searchOverlay, setSearchOverlay] = React.useState(false);
   const [userDropdown, setUserDropdown] = React.useState(false);
 
   React.useEffect(() => {
-    console.log(
-      "Header: Component mounted or dispatch changed. Attempting to fetch user data."
-    );
-    // Only fetch user if a token exists and user data isn't already loaded
-    // This prevents unnecessary API calls if the user data is already in state/localStorage
+    // console.log("Header: Component mounted or dispatch changed. Attempting to fetch user data.");
     const token = localStorage.getItem("token");
     if (token && !user) {
       dispatch(fetchUser());
-    } else if (user) {
-      console.log(
-        "Header: User already present in state, skipping fetchUser call."
-      );
-    } else {
-      console.log("Header: No token found, user not fetched.");
     }
-  }, [dispatch, user]); // Added user to dependency array to react to user state changes
+  }, [dispatch, user]);
 
   const handleLogout = () => {
-    console.log("Header: User logout initiated.");
+    // console.log("Header: User logout initiated.");
     dispatch(logout());
     navigate("/login");
   };
 
   const toggleSearchOverlay = () => {
     setSearchOverlay(true);
-    console.log("Header: Search overlay toggled ON.");
+    // console.log("Header: Search overlay toggled ON.");
   };
 
   const handleCancelSearch = () => {
     setSearchOverlay(false);
-    console.log("Header: Search overlay toggled OFF (cancelled).");
+    // console.log("Header: Search overlay toggled OFF (cancelled).");
   };
 
   const toggleUserDropdown = () => {
     setUserDropdown(!userDropdown);
-    console.log("Header: User dropdown toggled. Current state:", !userDropdown);
+    // console.log("Header: User dropdown toggled. Current state:", !userDropdown);
   };
 
-  // Determine the display name for the user
   const getUserDisplayName = () => {
     if (!user) return "Guest";
-    // Prioritize first_name if available
     if (user.first_name) {
       return user.first_name;
     }
-    // Fallback to username if first_name is not available
     if (user.username) {
       return user.username;
     }
-    // Fallback to email if neither first_name nor username are available
     if (user.email) {
       return user.email;
     }
-    return "User"; // Default fallback
+    return "User";
   };
 
   return (
@@ -78,12 +71,10 @@ const Header = () => {
         <div className="menu">
           <i className="fa fa-bars"></i>
         </div>
-        {/* <a href="/"> */}
         <div className="brand-logo">
           <img src={logo} alt="6Valley Logo " />
           <p className="brand-name">6Valley</p>
         </div>
-        {/* </a> */}
         <div className="search-bar">
           <input type="text" placeholder="Search for items..." />
           <button className="search-button">
@@ -96,13 +87,12 @@ const Header = () => {
           </div>
           <div className="action-item">
             <i className="fa fa-heart"></i>
-            <span className="badge">0</span>
+            {/* <span className="badge">0</span> */}
           </div>
           <div
             className="action-item user-icon-wrapper"
             onClick={toggleUserDropdown}
           >
-            {/* Conditional Rendering: Display user's name if logged in, otherwise display icon */}
             {user ? (
               <span className="user-display-name">
                 {getUserDisplayName()} <br />
@@ -130,9 +120,6 @@ const Header = () => {
                   </>
                 ) : (
                   <>
-                    {console.log(
-                      "Header: User not logged in, displaying sign in/up options."
-                    )}
                     <a href="/login" className="dropdown-item">
                       <i className="fa fa-sign-in-alt"></i> <span>Sign In</span>
                     </a>
@@ -145,10 +132,19 @@ const Header = () => {
             )}
           </div>
           <div className="action-item cart">
-            <a href="/cart">
+            <Link to="/cart">
               <i className="fa fa-shopping-cart"></i>
-              <span className="badge">0</span>
-            </a>
+              <span className="badge">{totalQuantity}</span>{" "}
+              {/* Display totalQuantity */}
+            </Link>
+            {/* Display totalAmount next to the cart icon */}
+            <span className="cart-total-amount">
+              PKR{" "}
+              {totalAmount.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </span>
           </div>
         </div>
       </div>

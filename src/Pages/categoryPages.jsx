@@ -5,171 +5,11 @@ import { Spinner, Alert } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 
 const truncateText = (text, maxLength) => {
-  if (text.length > maxLength) {
+  if (text && text.length > maxLength) {
     return text.substring(0, maxLength) + "...";
   }
   return text;
 };
-
-// --- MOCK PRODUCT DATA (REMAINS FOR THE /api/products SIMULATION) ---
-const MOCK_PRODUCTS_API = [
-  {
-    id: 101,
-    name: "Honor X14 Plus Laptop",
-    description: "Powerful laptop with a sleek design and fast performance.",
-    unit_price: 1680.0,
-    discount_price: 2200.0,
-    feature_image:
-      "https://via.placeholder.com/150/FF5733/FFFFFF?text=Honor+Laptop",
-    image: "https://via.placeholder.com/150/FF5733/FFFFFF?text=Honor+Laptop",
-    category_id: 7, // Example category ID
-    brand_id: 1, // Example brand ID
-    rating: 4.5,
-  },
-  {
-    id: 102,
-    name: "Apple MacBook Air M2",
-    description: "Lightweight and powerful for everyday tasks.",
-    unit_price: 1199.0,
-    discount_price: 1300.0,
-    feature_image:
-      "https://via.placeholder.com/150/007AFF/FFFFFF?text=MacBook+Air",
-    image: "https://via.placeholder.com/150/007AFF/FFFFFF?text=MacBook+Air",
-    category_id: 7,
-    brand_id: 2,
-    rating: 4.8,
-  },
-  {
-    id: 103,
-    name: "Samsung Galaxy Tab S8",
-    description: "Premium Android tablet for productivity and entertainment.",
-    unit_price: 699.0,
-    discount_price: 750.0,
-    feature_image:
-      "https://via.placeholder.com/150/1C3144/FFFFFF?text=Galaxy+Tab",
-    image: "https://via.placeholder.com/150/1C3144/FFFFFF?text=Galaxy+Tab",
-    category_id: 8, // Example category ID
-    brand_id: 3,
-    rating: 4.3,
-  },
-  {
-    id: 104,
-    name: "Sony WH-1000XM5 Headphones",
-    description: "Industry-leading noise canceling headphones.",
-    unit_price: 349.0,
-    discount_price: 399.0,
-    feature_image:
-      "https://via.placeholder.com/150/000000/FFFFFF?text=Sony+Headphones",
-    image: "https://via.placeholder.com/150/000000/FFFFFF?text=Sony+Headphones",
-    category_id: 9, // Example category ID
-    brand_id: 4,
-    rating: 4.7,
-  },
-  {
-    id: 105,
-    name: "Dell XPS 15",
-    description: "High-performance laptop for creative professionals.",
-    unit_price: 2199.0,
-    discount_price: 2400.0,
-    feature_image:
-      "https://via.placeholder.com/150/007ACC/FFFFFF?text=Dell+XPS",
-    image: "https://via.placeholder.com/150/007ACC/FFFFFF?text=Dell+XPS",
-    category_id: 7,
-    brand_id: 5,
-    rating: 4.6,
-  },
-  {
-    id: 106,
-    name: "Google Pixel 7 Pro",
-    description: "Advanced camera system and Google AI.",
-    unit_price: 899.0,
-    discount_price: 950.0,
-    feature_image:
-      "https://via.placeholder.com/150/4285F4/FFFFFF?text=Pixel+7+Pro",
-    image: "https://via.placeholder.com/150/4285F4/FFFFFF?text=Pixel+7+Pro",
-    category_id: 10, // Example category ID
-    brand_id: 6,
-    rating: 4.4,
-  },
-  {
-    id: 107,
-    name: "Logitech MX Master 3S",
-    description: "Advanced wireless mouse for ultimate productivity.",
-    unit_price: 99.0,
-    discount_price: 120.0,
-    feature_image:
-      "https://via.placeholder.com/150/666666/FFFFFF?text=Logitech+Mouse",
-    image: "https://via.placeholder.com/150/666666/FFFFFF?text=Logitech+Mouse",
-    category_id: 11, // Example category ID
-    brand_id: 7,
-    rating: 4.9,
-  },
-  {
-    id: 108,
-    name: "Amazon Echo Dot (5th Gen)",
-    description: "Smart speaker with Alexa.",
-    unit_price: 49.0,
-    discount_price: 59.0,
-    feature_image:
-      "https://via.placeholder.com/150/232F3E/FFFFFF?text=Echo+Dot",
-    image: "https://via.placeholder.com/150/232F3E/FFFFFF?text=Echo+Dot",
-    category_id: 12, // Example category ID
-    brand_id: 8,
-    rating: 4.2,
-  },
-  {
-    id: 109,
-    name: "Razer Blade 15",
-    description: "High-performance gaming laptop.",
-    unit_price: 1800.0,
-    discount_price: 2000.0,
-    feature_image:
-      "https://via.placeholder.com/150/00FF00/FFFFFF?text=Razer+Laptop",
-    image: "https://via.placeholder.com/150/00FF00/FFFFFF?text=Razer+Laptop",
-    category_id: 7,
-    brand_id: 9,
-    rating: 4.6,
-  },
-  {
-    id: 110,
-    name: "Bose QuietComfort Earbuds II",
-    description: "World-class noise cancellation.",
-    unit_price: 279.0,
-    discount_price: 299.0,
-    feature_image:
-      "https://via.placeholder.com/150/808080/FFFFFF?text=Bose+Earbuds",
-    image: "https://via.placeholder.com/150/808080/FFFFFF?text=Bose+Earbuds",
-    category_id: 9,
-    brand_id: 10,
-    rating: 4.5,
-  },
-  {
-    id: 111,
-    name: "Kindle Paperwhite",
-    description: "Thin, lightweight, and waterproof.",
-    unit_price: 139.0,
-    discount_price: 150.0,
-    feature_image: "https://via.placeholder.com/150/C0C0C0/FFFFFF?text=Kindle",
-    image: "https://via.placeholder.com/150/C0C0C0/FFFFFF?text=Kindle",
-    category_id: 13, // New mock category ID
-    brand_id: 8, // Amazon brand
-    rating: 4.7,
-  },
-  {
-    id: 112,
-    name: "Fitbit Charge 5",
-    description: "Advanced fitness and health tracker.",
-    unit_price: 149.0,
-    discount_price: 169.0,
-    feature_image: "https://via.placeholder.com/150/008080/FFFFFF?text=Fitbit",
-    image: "https://via.placeholder.com/150/008080/FFFFFF?text=Fitbit",
-    category_id: 14, // New mock category ID
-    brand_id: 11, // Fitbit brand
-    rating: 4.3,
-  },
-];
-
-// --- END MOCK PRODUCT DATA ---
 
 const CategoryPages = () => {
   const [searchParams] = useSearchParams();
@@ -186,6 +26,9 @@ const CategoryPages = () => {
     error: appGlobalError,
     fetchAllCategoriesData,
     fetchBrandsData,
+    allProducts, // From AppContext
+    allProductsPagination, // From AppContext
+    fetchAllProductsData, // From AppContext
   } = useContext(AppContext);
 
   const [filters, setFilters] = useState({
@@ -194,186 +37,105 @@ const CategoryPages = () => {
     max_price: "",
     category_ids: [], // Array to hold selected category IDs
     brand_ids: [], // Array to hold selected brand IDs
-    sort_by: "Default",
-    sort_order: "asc",
-    filter_by: "Default",
+    sort_by: "Default", // Corresponds to API parameter (e.g., 'name', 'unit_price')
+    sort_order: "asc", // Corresponds to API parameter ('asc', 'desc')
+    filter_by: "Default", // For special API filters like 'best-selling', 'top-rated' if your API supports it
     page: 1,
-    limit: 8,
+    limit: 25, // Matches the API's default per_page or your desired limit
   });
 
-  const [displayedProducts, setDisplayedProducts] = useState([]);
   const [productsLoading, setProductsLoading] = useState(false);
   const [productsError, setProductsError] = useState(null);
-  const [paginationInfo, setPaginationInfo] = useState({
-    total: 0,
-    currentPage: 1,
-    limit: filters.limit,
-  });
 
   const [localCategoriesLoading, setLocalCategoriesLoading] = useState(true);
   const [localCategoriesError, setLocalCategoriesError] = useState(null);
   const [localBrandsLoading, setLocalBrandsLoading] = useState(true);
   const [localBrandsError, setLocalBrandsError] = useState(null);
-  const [searchTermLocal, setSearchTermLocal] = useState("");
+  const [searchTermLocal, setSearchTermLocal] = useState(""); // For brand search filter in sidebar
 
+  // Fetch categories and brands for the sidebar filters
   useEffect(() => {
     fetchAllCategoriesData(setLocalCategoriesLoading, setLocalCategoriesError);
     fetchBrandsData(setLocalBrandsLoading, setLocalBrandsError);
   }, [fetchAllCategoriesData, fetchBrandsData]);
 
-  const fetchProductsMockApi = useCallback(
-    async (currentFilters, currentPage, currentLimit) => {
-      setProductsLoading(true);
-      setProductsError(null);
-
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      try {
-        let filteredData = [...MOCK_PRODUCTS_API];
-
-        if (currentFilters.search) {
-          const searchTermLower = currentFilters.search.toLowerCase();
-          filteredData = filteredData.filter(
-            (p) =>
-              p.name.toLowerCase().includes(searchTermLower) ||
-              p.description.toLowerCase().includes(searchTermLower)
-          );
-        }
-        if (currentFilters.min_price) {
-          filteredData = filteredData.filter(
-            (p) => p.unit_price >= parseFloat(currentFilters.min_price)
-          );
-        }
-        if (currentFilters.max_price) {
-          filteredData = filteredData.filter(
-            (p) => p.unit_price <= parseFloat(currentFilters.max_price)
-          );
-        }
-        if (
-          currentFilters.category_ids &&
-          currentFilters.category_ids.length > 0
-        ) {
-          filteredData = filteredData.filter((p) =>
-            currentFilters.category_ids.includes(p.category_id)
-          );
-        }
-        if (currentFilters.brand_ids && currentFilters.brand_ids.length > 0) {
-          filteredData = filteredData.filter((p) =>
-            currentFilters.brand_ids.includes(p.brand_id)
-          );
-        }
-
-        if (currentFilters.filter_by === "best-selling") {
-          filteredData.sort((a, b) => b.id - a.id);
-        } else if (currentFilters.filter_by === "top-rated") {
-          filteredData.sort((a, b) => b.rating - a.rating);
-        }
-
-        if (currentFilters.sort_by && currentFilters.sort_by !== "Default") {
-          filteredData.sort((a, b) => {
-            let valA = a[currentFilters.sort_by];
-            let valB = b[currentFilters.sort_by];
-            if (typeof valA === "string" && typeof valB === "string") {
-              return currentFilters.sort_order === "asc"
-                ? valA.localeCompare(valB)
-                : valB.localeCompare(valA);
-            }
-            return currentFilters.sort_order === "asc"
-              ? valA - valB
-              : valB - valA;
-          });
-        }
-
-        const totalProducts = filteredData.length;
-        const startIndex = (currentPage - 1) * currentLimit;
-        const endIndex = startIndex + currentLimit;
-        const paginatedData = filteredData.slice(startIndex, endIndex);
-
-        setDisplayedProducts(paginatedData);
-        setPaginationInfo({
-          total: totalProducts,
-          currentPage: currentPage,
-          limit: currentLimit,
-        });
-      } catch (err) {
-        console.error("Failed to fetch products (mock API):", err);
-        setProductsError(err);
-      } finally {
-        setProductsLoading(false);
-      }
-    },
-    []
-  );
-
+  // Main effect to fetch products based on filters
   useEffect(() => {
-    const hasNewAPIFilters =
-      filters.search ||
-      filters.min_price ||
-      filters.max_price ||
-      filters.category_ids.length > 0 || // Now includes category/brand clicks
-      filters.brand_ids.length > 0 ||
-      filters.sort_by !== "Default" ||
-      filters.filter_by !== "Default";
+    const fetchAndSetProducts = async () => {
+      // Determine if the current view is one of the pre-fetched homepage sections
+      const isHomepageSection =
+        initialSection &&
+        [
+          "flash-deals",
+          "featured-products",
+          "latest-products",
+          "top-rated",
+        ].includes(initialSection) &&
+        !filters.search &&
+        !filters.min_price &&
+        !filters.max_price &&
+        filters.category_ids.length === 0 &&
+        filters.brand_ids.length === 0 &&
+        filters.sort_by === "Default" &&
+        filters.filter_by === "Default";
 
-    const existingApiSections = [
-      "flash-deals",
-      "featured-products",
-      "latest-products",
-      "best-selling",
-      "top-rated",
-    ];
-
-    if (
-      initialSection &&
-      existingApiSections.includes(initialSection) &&
-      !hasNewAPIFilters
-    ) {
-      let sourceProducts = [];
-      switch (initialSection) {
-        case "flash-deals":
-          sourceProducts = flushDeals || [];
-          break;
-        case "featured-products":
-          sourceProducts = featured || [];
-          break;
-        case "latest-products":
-          sourceProducts = latests || [];
-          break;
-        case "best-selling":
-        case "top-rated":
-          sourceProducts = topRated || [];
-          break;
-        default:
-          sourceProducts = [];
-          break;
+      if (isHomepageSection) {
+        let sourceProducts = [];
+        switch (initialSection) {
+          case "flash-deals":
+            sourceProducts = flushDeals || [];
+            break;
+          case "featured-products":
+            sourceProducts = featured || [];
+            break;
+          case "latest-products":
+            sourceProducts = latests || [];
+            break;
+          case "top-rated":
+            sourceProducts = topRated || [];
+            break;
+          default:
+            sourceProducts = [];
+            break;
+        }
+        // These are already processed with IMAGE_BASE_URL in AppContext
+        setProductsLoading(false);
+        setProductsError(null);
+        // Note: When displaying pre-fetched products, pagination might not apply directly
+        // You might need to implement local pagination if these lists are very long
+        // For simplicity, we'll display all of them for now.
+      } else {
+        // If it's not a pre-fetched homepage section OR if any filter is applied,
+        // use the main products API call with filters.
+        await fetchAllProductsData(
+          setProductsLoading,
+          setProductsError,
+          filters.page,
+          filters.limit,
+          {
+            search: filters.search,
+            min_price: filters.min_price,
+            max_price: filters.max_price,
+            category_ids: filters.category_ids,
+            brand_ids: filters.brand_ids,
+            sort_by: filters.sort_by,
+            sort_order: filters.sort_order,
+            filter_by: filters.filter_by,
+          }
+        );
       }
-      setDisplayedProducts(sourceProducts);
-      setPaginationInfo({
-        total: sourceProducts.length,
-        currentPage: 1,
-        limit:
-          sourceProducts.length > 0 ? sourceProducts.length : filters.limit,
-      });
-      setProductsLoading(false);
-      setProductsError(null);
-    } else {
-      const apiFilters = {
-        ...filters,
-        section:
-          initialSection && !existingApiSections.includes(initialSection)
-            ? initialSection
-            : undefined,
-      };
-      fetchProductsMockApi(apiFilters, filters.page, filters.limit);
-    }
+    };
+
+    fetchAndSetProducts();
   }, [
     initialSection,
     filters,
-    fetchProductsMockApi,
+    fetchAllProductsData,
     flushDeals,
     featured,
     latests,
     topRated,
+    // dependencies for pre-fetched sections if `isHomepageSection` is true
   ]);
 
   const handleSortChange = (e) => {
@@ -383,7 +145,7 @@ const CategoryPages = () => {
 
     switch (value) {
       case "Price: Low to High":
-        sortBy = "unit_price";
+        sortBy = "unit_price"; // Assuming your API understands 'unit_price' for sorting
         sortOrder = "asc";
         break;
       case "Price: High to Low":
@@ -391,13 +153,14 @@ const CategoryPages = () => {
         sortOrder = "desc";
         break;
       case "Name: A to Z":
-        sortBy = "name";
+        sortBy = "name"; // Assuming your API understands 'name' for sorting
         sortOrder = "asc";
         break;
       case "Name: Z to A":
         sortBy = "name";
         sortOrder = "desc";
         break;
+      // If your API supports rating sort, add cases for it, e.g.:
       case "Rating: Low to High":
         sortBy = "rating";
         sortOrder = "asc";
@@ -415,7 +178,7 @@ const CategoryPages = () => {
       ...prev,
       sort_by: sortBy,
       sort_order: sortOrder,
-      page: 1,
+      page: 1, // Reset to first page on sort change
     }));
   };
 
@@ -424,11 +187,10 @@ const CategoryPages = () => {
     setFilters((prev) => ({
       ...prev,
       filter_by: value,
-      page: 1,
+      page: 1, // Reset to first page on filter change
     }));
   };
 
-  // New handler for clicking a category row
   const handleCategoryClick = (categoryId) => {
     setFilters((prev) => {
       const currentCategoryIds = prev.category_ids;
@@ -436,19 +198,18 @@ const CategoryPages = () => {
         return {
           ...prev,
           category_ids: currentCategoryIds.filter((id) => id !== categoryId), // Remove if already selected
-          page: 1,
+          page: 1, // Reset to first page on filter change
         };
       } else {
         return {
           ...prev,
           category_ids: [...currentCategoryIds, categoryId], // Add if not selected
-          page: 1,
+          page: 1, // Reset to first page on filter change
         };
       }
     });
   };
 
-  // New handler for clicking a brand row
   const handleBrandClick = (brandId) => {
     setFilters((prev) => {
       const currentBrandIds = prev.brand_ids;
@@ -456,13 +217,13 @@ const CategoryPages = () => {
         return {
           ...prev,
           brand_ids: currentBrandIds.filter((id) => id !== brandId), // Remove if already selected
-          page: 1,
+          page: 1, // Reset to first page on filter change
         };
       } else {
         return {
           ...prev,
           brand_ids: [...currentBrandIds, brandId], // Add if not selected
-          page: 1,
+          page: 1, // Reset to first page on filter change
         };
       }
     });
@@ -472,7 +233,7 @@ const CategoryPages = () => {
     setFilters((prev) => ({
       ...prev,
       search: e.target.value,
-      page: 1,
+      page: 1, // Reset to first page on search change
     }));
   };
 
@@ -481,7 +242,7 @@ const CategoryPages = () => {
     setFilters((prev) => ({
       ...prev,
       [`${type}_price`]: value,
-      page: 1,
+      page: 1, // Reset to first page on price change
     }));
   };
 
@@ -521,12 +282,67 @@ const CategoryPages = () => {
     );
   }
 
+  // Determine which product list to display based on initialSection or dynamic filters
+  const productsToDisplay =
+    initialSection &&
+    [
+      "flash-deals",
+      "featured-products",
+      "latest-products",
+      "top-rated",
+    ].includes(initialSection) &&
+    !filters.search &&
+    !filters.min_price &&
+    !filters.max_price &&
+    filters.category_ids.length === 0 &&
+    filters.brand_ids.length === 0 &&
+    filters.sort_by === "Default" &&
+    filters.filter_by === "Default"
+      ? (() => {
+          switch (initialSection) {
+            case "flash-deals":
+              return flushDeals;
+            case "featured-products":
+              return featured;
+            case "latest-products":
+              return latests;
+            case "top-rated":
+              return topRated;
+            default:
+              return [];
+          }
+        })()
+      : allProducts; // Otherwise, use the dynamically fetched products
+
+  const currentPagination =
+    initialSection &&
+    [
+      "flash-deals",
+      "featured-products",
+      "latest-products",
+      "top-rated",
+    ].includes(initialSection) &&
+    !filters.search &&
+    !filters.min_price &&
+    !filters.max_price &&
+    filters.category_ids.length === 0 &&
+    filters.brand_ids.length === 0 &&
+    filters.sort_by === "Default" &&
+    filters.filter_by === "Default"
+      ? {
+          total: productsToDisplay.length,
+          currentPage: 1,
+          limit: productsToDisplay.length,
+          lastPage: 1,
+        }
+      : allProductsPagination;
+
   return (
     <div className="mainContainer">
       <div className="first-section">
         <div className="productsAndProductsFoundSection">
           <h5>Products</h5>
-          <p>{paginationInfo.total || 0} Products found</p>
+          <p>{currentPagination.total || 0} Products found</p>
         </div>
 
         <div className="search-bar-container">
@@ -581,8 +397,10 @@ const CategoryPages = () => {
             <option value="Default">Filter by Default</option>
             <option value="best-selling">Best Selling</option>
             <option value="top-rated">Top Rated</option>
-            <option value="top-rated">Flush Deals</option>
-            <option value="top-rated">Featured Products</option>
+            <option value="flush-deals">Flush Deals</option>{" "}
+            {/* Adjusted value */}
+            <option value="featured-products">Featured Products</option>{" "}
+            {/* Adjusted value */}
           </select>
         </div>
         <div className="menu-display">
@@ -593,14 +411,7 @@ const CategoryPages = () => {
         <div className="sideFilter">
           <h5 className="filterBy">Filter by</h5>
           <h6 className="productBy">Product Type</h6>
-          <div className="sort-by-containerr">
-            All Products
-            {/* <select className="sorting-item">
-              <option value="Default">All</option>
-              <option value="physical">Physical</option>
-              <option value="digital">Digital</option>
-            </select> */}
-          </div>
+          <div className="sort-by-containerr">All Products</div>
           <div className="filter-group">
             <h4 className="productBy">Price</h4>
             <div className="price-inputs">
@@ -642,7 +453,7 @@ const CategoryPages = () => {
                       filters.category_ids.includes(category.id)
                         ? "active-filter"
                         : ""
-                    }`} // Add active class
+                    }`}
                     onClick={() => handleCategoryClick(category.id)}
                   >
                     <div className="imageNameIcon">
@@ -705,7 +516,7 @@ const CategoryPages = () => {
                       filters.brand_ids.includes(brand.id)
                         ? "active-filter"
                         : ""
-                    }`} // Add active class
+                    }`}
                     onClick={() => handleBrandClick(brand.id)}
                   >
                     <div className="imageNameIcon">
@@ -737,8 +548,8 @@ const CategoryPages = () => {
         </div>
         <div className="productsSectionCategory">
           <div className="LatestProducts-grid">
-            {displayedProducts.length > 0 ? (
-              displayedProducts.map((product) => (
+            {productsToDisplay.length > 0 ? (
+              productsToDisplay.map((product) => (
                 <div className="LatestProducts-card" key={product.id}>
                   <div className="LatestProducts-image-container">
                     <img
@@ -751,34 +562,38 @@ const CategoryPages = () => {
                   <p className="LatestProducts-productPrice">
                     ${product.unit_price}
                   </p>
+                  {/* You can add a rating display here if product.rating is available */}
+                  {product.rating && <p>Rating: {product.rating}/5</p>}
                 </div>
               ))
             ) : (
               <p>No products available matching your criteria.</p>
             )}
           </div>
-          {paginationInfo.total > filters.limit && (
+          {currentPagination.total > currentPagination.limit && ( // Only show pagination if there are more items than current limit
             <div className="pagination-controls mt-4 d-flex justify-content-center align-items-center">
               <button
                 className="btn btn-outline-secondary me-2"
                 onClick={() =>
                   setFilters((prev) => ({ ...prev, page: prev.page - 1 }))
                 }
-                disabled={filters.page === 1}
+                disabled={currentPagination.currentPage === 1}
               >
                 Previous
               </button>
               <span className="text-muted">
                 {" "}
-                Page {filters.page} of{" "}
-                {Math.ceil(paginationInfo.total / filters.limit)}{" "}
+                Page {currentPagination.currentPage} of{" "}
+                {currentPagination.lastPage}{" "}
               </span>
               <button
                 className="btn btn-outline-secondary ms-2"
                 onClick={() =>
                   setFilters((prev) => ({ ...prev, page: prev.page + 1 }))
                 }
-                disabled={filters.page * filters.limit >= paginationInfo.total}
+                disabled={
+                  currentPagination.currentPage >= currentPagination.lastPage
+                }
               >
                 Next
               </button>

@@ -10,11 +10,11 @@ import {
   Spinner,
   Alert,
 } from "react-bootstrap";
-import "./HeroSection3.css";
+import "./HeroSection.css";
 import { List } from "react-bootstrap-icons";
 import { AppContext } from "../context/AppContext";
 
-const HeroSection2 = () => {
+const HeroSection = () => {
   const {
     allCategories,
     fetchAllCategoriesData,
@@ -316,4 +316,4 @@ const HeroSection2 = () => {
   );
 };
 
-export default HeroSection2;
+export default HeroSection;

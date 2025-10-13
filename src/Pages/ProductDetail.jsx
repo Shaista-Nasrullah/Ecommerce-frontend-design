@@ -1,9 +1,6 @@
 import React, { useEffect, useContext, useState } from "react";
 import { Container, Button } from "react-bootstrap";
 import "./ProductDetail.css";
-import lipstickImage from "../Components/Assets/lipstick.webp";
-import lipstickImage1 from "../Components/Assets/lipstick1.webp";
-import lipstickImage2 from "../Components/Assets/lipstick2.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import featuredProducts1 from "../Components/Assets/featured-product1.png";
@@ -21,6 +18,8 @@ import featuredProducts11 from "../Components/Assets/featured-product11.png";
 import featuredProducts12 from "../Components/Assets/featured-product12.png";
 import { AppContext } from "../context/AppContext";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../slices/cartSlice"; // Import addToCart action
 
 const LatestProducts = [
   {
@@ -127,11 +126,12 @@ const featuredProducts = [
 
 const ProductDetail = () => {
   const { fetchProductById } = useContext(AppContext);
-  const { productId } = useParams(); // Get the productId from the URL
-
+  const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const dispatch = useDispatch(); // Initialize useDispatch
+  const [quantity, setQuantity] = useState(1); // State for quantity on product detail page
 
   useEffect(() => {
     const getProductDetails = async () => {
@@ -186,6 +186,62 @@ const ProductDetail = () => {
       </Container>
     );
   }
+
+  // Determine the price to send to cart
+  const productPrice =
+    product.variations && product.variations.length > 0
+      ? parseFloat(product.variations[0].default_sell_price)
+      : 0; // Default to 0 if no variations/price
+
+  const handleAddToCart = () => {
+    console.log("handleAddToCart called!");
+    console.log("Product object when adding to cart:", product);
+
+    if (!product) {
+      console.error(
+        "Attempted to add item to cart, but 'product' is null or undefined."
+      );
+      alert("Error: Product details not loaded. Cannot add to cart.");
+      return; // Stop execution if product is not available
+    }
+
+    // Use the actual product price derived from variations, not a hardcoded value.
+    // Ensure `productPrice` is correctly populated based on your API response.
+    // If variations can have different prices, you might need to select one.
+    // For now, assuming `productPrice` is the correct single unit price.
+    const priceToUse = productPrice; // Use the dynamically determined productPrice
+
+    console.log("Dispatching addToCart with:", {
+      id: product.id,
+      name: product.name,
+      price: priceToUse, // Use the correct unit price
+      image: product.feature_image,
+      quantity: quantity, // Pass the selected quantity
+    });
+
+    dispatch(
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: priceToUse,
+        image: product.feature_image,
+        quantity: quantity, // Pass the selected quantity from state
+      })
+    );
+    alert(`${quantity} x ${product.name} added to cart!`);
+  };
+
+  const handleQuantityChange = (type) => {
+    if (type === "increment") {
+      setQuantity((prevQty) => prevQty + 1);
+    } else if (type === "decrement" && quantity > 1) {
+      setQuantity((prevQty) => prevQty - 1);
+    }
+  };
+
+  // Total price calculation for display on product detail page
+  const displayedTotalPrice = (productPrice * quantity).toFixed(2);
+
   return (
     <>
       <div className="productDetailContainer">
@@ -196,14 +252,15 @@ const ProductDetail = () => {
                 <img src={product.feature_image} alt={product.name} />
               </div>
               <div className="images-below">
+                {/* Assuming these are additional images for the current product */}
                 <div className="firstImage">
-                  <img src={lipstickImage} alt="lipstick" />
+                  <img src={product.feature_image} alt="product thumbnail" />
                 </div>
                 <div className="secondImage">
-                  <img src={lipstickImage1} alt="lipstick" />
+                  <img src={product.feature_image} alt="product thumbnail" />
                 </div>
                 <div className="thirdImage">
-                  <img src={lipstickImage2} alt="lipstick" />
+                  <img src={product.feature_image} alt="product thumbnail" />
                 </div>
               </div>
             </div>
@@ -222,39 +279,45 @@ const ProductDetail = () => {
               <div className="PDproductPrice">
                 {" "}
                 {product.variations && product.variations.length > 0
-                  ? `PKR ${parseFloat(
-                      product.variations[0].default_sell_price
-                    ).toFixed(2)}`
+                  ? `PKR ${productPrice.toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}`
                   : "N/A"}
               </div>
               <div className="quantityContainer">
                 <p className="Qty">Qty</p>
                 <div className="QtyIncreaseDecrease">
-                  <div className="iconStyle">
+                  <div
+                    className="iconStyle"
+                    onClick={() => handleQuantityChange("decrement")}
+                  >
                     <FontAwesomeIcon icon={faMinus} />{" "}
                   </div>
-                  {/* Use FontAwesomeIcon */}
-                  <div className="quantity">1</div>
-
-                  <div className="iconStyle">
+                  <div className="quantity">{quantity}</div>
+                  <div
+                    className="iconStyle"
+                    onClick={() => handleQuantityChange("increment")}
+                  >
                     <FontAwesomeIcon icon={faPlus} />{" "}
                   </div>
-                  {/* Use FontAwesomeIcon */}
                 </div>
               </div>
               <div className="totalPrice">
                 <div className="PDproductPrice">
-                  <strong className="text">Total Price: </strong>{" "}
-                  {product.variations && product.variations.length > 0
-                    ? `PKR ${parseFloat(
-                        product.variations[0].default_sell_price
-                      ).toFixed(2)}`
-                    : "N/A"}
+                  <strong className="text">Total Price: </strong> PKR{" "}
+                  {parseFloat(displayedTotalPrice).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </div>
               </div>
               <div className="buttons">
+                {/* You might want to pass the current quantity to addToCart here as well if you want it to add that specific quantity */}
                 <button className="buyNowBtn">Buy now</button>
-                <button className="addToCartBtn">Add to Cart</button>
+                <button className="addToCartBtn" onClick={handleAddToCart}>
+                  Add to Cart
+                </button>
                 <button className="wishListBtn"> 0</button>
               </div>
             </div>
