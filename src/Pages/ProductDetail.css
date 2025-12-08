@@ -266,6 +266,8 @@ li {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: 20px;
+  /* align-items: center; */
   margin-top: 20px;
   gap: 20px;
   background-color: #f9fafb;
@@ -285,7 +287,8 @@ li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* flex-wrap: wrap;  */
+  /* background-color: red; */
+  padding-bottom: 30px;
 }
 
 .productsContainer {
@@ -302,7 +305,103 @@ li {
   /* Add any other styling for your product card here */
 }
 
-/* Media Queries for different screen sizes */
+.pd-product-card {
+  flex-shrink: 0;
+  width: 280px;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e1efff;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.pd-product-card-content {
+  display: flex;
+}
+
+.pd-product-image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 150px;
+}
+
+.pd-product-image {
+  max-width: 100%;
+  max-height: 110px;
+  display: block;
+  object-fit: contain;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.pd-product-info {
+  padding: 15px;
+  flex-grow: 1; /* Allows info section to take available space */
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  justify-content: center; /* Pushes rating to the bottom if present */
+}
+
+.pd-product-name {
+  font-size: 1em;
+  margin: 0 0 10px 0;
+  color: #333;
+  line-height: 1.3;
+  cursor: pointer;
+}
+
+.pd-price-details {
+  margin-bottom: 10px;
+}
+
+.pd-original-price {
+  text-decoration: line-through;
+  color: #999;
+  margin-right: 8px;
+  font-size: 0.8em;
+}
+
+.pd-discounted-price {
+  font-weight: bold;
+  color: #333;
+  font-size: 1em;
+}
+
+.pd-productsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  /* background-color: red; */
+}
+
+.pd-product-card-row-2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* background-color: blue; */
+  height: 250px;
+  width: 220px;
+  padding: 20px;
+}
+.pd-image-wrapper {
+  height: 180px;
+  width: 160px;
+}
+.pd-image-wrapper img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.pd-product-info {
+  font-size: 0.9em;
+}
 
 /* For tablets and smaller desktops (e.g., screens up to 1024px) */
 @media (max-width: 1024px) {

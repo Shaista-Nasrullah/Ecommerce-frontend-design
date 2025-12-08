@@ -1,3 +1,5 @@
+// AppContext.js - MODIFIED
+
 import { createContext, useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -5,6 +7,7 @@ import { toast } from "react-toastify";
 export const AppContext = createContext();
 
 const AppContextProvider = (props) => {
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const IMAGE_BASE_URL = "https://tdsonlinepk.alitechnosolutions.com";
 
   const HOME_API_URL = "/api/home/data";
@@ -13,10 +16,9 @@ const AppContextProvider = (props) => {
   const SUBCATEGORIES_API_BASE = "/api/categories/sub";
   const SINGLE_PRODUCT_API_BASE = "/api/products";
   const ALL_PRODUCTS_API = "/api/products/all";
-
-  const [loading, setLoading] = useState(true); // General loading for initial homepage data
-  const [error, setError] = useState(null); // General error for initial homepage data
-
+  const WISHLIST_API_URL = "/api/user/wishlist";
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [homePageCategories, setHomePageCategories] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
   const [homePageBrands, setHomePageBrands] = useState([]);
@@ -27,9 +29,10 @@ const AppContextProvider = (props) => {
   const [featured, setFeatured] = useState([]);
   const [firstBanner, setFirstBanner] = useState([]);
   const [secondBanner, setSecondBanner] = useState([]);
-
-  // New state for all products and their pagination info
+  const [wishlist, setWishlist] = useState([]);
+  const [wishlistCount, setWishlistCount] = useState(0);
   const [allProducts, setAllProducts] = useState([]);
+  const [isCategorySidebarOpen, setIsCategorySidebarOpen] = useState(false);
   const [allProductsPagination, setAllProductsPagination] = useState({
     total: 0,
     currentPage: 1,
@@ -53,6 +56,7 @@ const AppContextProvider = (props) => {
   );
 
   // Helper function for single product image processing
+  // This now expects a product object (like response.data.product)
   const processProductImage = useCallback(
     (product) => {
       if (!product) return null;
@@ -70,13 +74,17 @@ const AppContextProvider = (props) => {
     [IMAGE_BASE_URL]
   );
 
+  const toggleCategorySidebar = () => {
+    setIsCategorySidebarOpen((prev) => !prev);
+  };
+
   // --- 1. Homepage Data Fetch ---
   const fetchHomePageData = useCallback(async () => {
     setLoading(true);
     setError(null);
     console.log("Attempting to fetch all homepage data from:", HOME_API_URL);
     try {
-      const response = await axios.get(HOME_API_URL);
+      const response = await axios.get(API_BASE_URL + HOME_API_URL);
       console.log("Homepage API Response Status:", response.status);
       console.log("Homepage API Response Data:", response.data);
 
@@ -104,18 +112,7 @@ const AppContextProvider = (props) => {
       setLoading(false);
       console.log("Finished fetching homepage data.");
     }
-  }, [
-    HOME_API_URL,
-    processItemsWithImage,
-    setHomePageCategories,
-    setHomePageBrands,
-    setFlushDeals,
-    setLatests,
-    setTopRated,
-    setFeatured,
-    setFirstBanner,
-    setSecondBanner,
-  ]);
+  }, [HOME_API_URL, processItemsWithImage]);
 
   // --- 2. Individual Categories Fetch (for Categories Page) ---
   const fetchAllCategoriesData = useCallback(
@@ -127,7 +124,7 @@ const AppContextProvider = (props) => {
         CATEGORIES_API_ALL
       );
       try {
-        const response = await axios.get(CATEGORIES_API_ALL);
+        const response = await axios.get(API_BASE_URL + CATEGORIES_API_ALL);
         if (response.data && Array.isArray(response.data)) {
           setAllCategories(processItemsWithImage(response.data));
           console.log(
@@ -163,7 +160,7 @@ const AppContextProvider = (props) => {
       setComponentError(null);
       console.log("Attempting to fetch ALL brands from:", BRANDS_API_ALL);
       try {
-        const response = await axios.get(BRANDS_API_ALL);
+        const response = await axios.get(API_BASE_URL + BRANDS_API_ALL);
         if (response.data && Array.isArray(response.data)) {
           setAllBrands(processItemsWithImage(response.data));
           console.log("ALL Brands fetched for Brands Page successfully.");
@@ -187,7 +184,6 @@ const AppContextProvider = (props) => {
   );
 
   // --- 4. Fetch Subcategories for a given Category ID ---
-  // This function will be called by the SubCategories component
   const fetchSubCategoriesData = useCallback(
     async (categoryId, setComponentLoading, setComponentError) => {
       setComponentLoading(true);
@@ -197,25 +193,20 @@ const AppContextProvider = (props) => {
       );
       try {
         const response = await axios.get(
-          `${SUBCATEGORIES_API_BASE}/${categoryId}`
+          `${API_BASE_URL}${SUBCATEGORIES_API_BASE}/${categoryId}`
         );
         console.log("Subcategories API Response Status:", response.status);
         console.log("Subcategories API Response Data:", response.data);
 
-        // Your Postman response shows an array directly, so we'll handle that first.
-        // If your API wraps it in a 'data' property for subcategories too, adjust here.
         if (response.data && Array.isArray(response.data)) {
           const subCategoriesWithFullImageUrls = processItemsWithImage(
             response.data
           );
-          // Instead of setting state here, we'll return the data
-          // The component calling this function will manage its own state.
           console.log(
             "Subcategories fetched successfully (from top-level array)."
           );
           return subCategoriesWithFullImageUrls;
         } else if (response.data && Array.isArray(response.data.data)) {
-          // Fallback if API returns {data: [...]}
           const subCategoriesWithFullImageUrls = processItemsWithImage(
             response.data.data
           );
@@ -252,7 +243,7 @@ const AppContextProvider = (props) => {
     [SUBCATEGORIES_API_BASE, processItemsWithImage]
   );
 
-  // --- 5. Fetch Single Product by ID ---
+  // --- 5. Fetch Single Product by ID (MODIFIED) ---
   const fetchProductById = useCallback(
     async (productId, setComponentLoading, setComponentError) => {
       setComponentLoading(true);
@@ -260,17 +251,25 @@ const AppContextProvider = (props) => {
       console.log(`Attempting to fetch product with ID: ${productId}`);
       try {
         const response = await axios.get(
-          `${SINGLE_PRODUCT_API_BASE}/${productId}`
+          `${API_BASE_URL}${SINGLE_PRODUCT_API_BASE}/${productId}`
         );
         console.log("Single Product API Response Status:", response.status);
         console.log("Single Product API Response Data:", response.data);
 
-        if (response.data) {
-          const productWithFullImageUrls = processProductImage(response.data);
-          console.log("Product fetched successfully.");
-          return productWithFullImageUrls;
+        if (response.data && response.data.product) {
+          const mainProduct = processProductImage(response.data.product);
+          const similarProducts = processItemsWithImage(
+            response.data.similiar_products || []
+          ); // Ensure it's an array
+
+          console.log(
+            "Main product and similar products fetched successfully."
+          );
+          return { mainProduct, similarProducts }; // Return an object with both
         } else {
-          throw new Error("API response for single product is empty.");
+          throw new Error(
+            "API response for single product is empty or missing 'product' key."
+          );
         }
       } catch (err) {
         console.error(
@@ -283,35 +282,39 @@ const AppContextProvider = (props) => {
           )
         );
         toast.error(`Failed to load product with ID ${productId}.`);
-        return null; // Return null on error
+        return { mainProduct: null, similarProducts: [] }; // Return null for product and empty array for similar on error
       } finally {
         setComponentLoading(false);
         console.log(`Finished fetching product with ID: ${productId}.`);
       }
     },
-    [SINGLE_PRODUCT_API_BASE, processProductImage]
+    [SINGLE_PRODUCT_API_BASE, processProductImage, processItemsWithImage]
   );
 
-  // --- 6. Fetch ALL Products with Pagination ---
+  // --- 6. Fetch ALL Products with Pagination and Filters ---
   const fetchAllProductsData = useCallback(
     async (
       setComponentLoading,
       setComponentError,
       page = 1,
       limit = 25,
-      filters = {} // Add filters object for search, category, brand, sort, etc.
+      filters = {}
     ) => {
       setComponentLoading(true);
       setComponentError(null);
-      console.log(`Attempting to fetch all products from: ${ALL_PRODUCTS_API}`);
+      console.log(`fetchAllProductsData called with:`, {
+        page,
+        limit,
+        filters,
+      });
 
       // Build query parameters based on filters
       const queryParams = new URLSearchParams();
       queryParams.append("page", page);
-      queryParams.append("per_page", limit); // Use 'per_page' if that's what your API expects for limit
+      queryParams.append("per_page", limit);
 
       if (filters.search) {
-        queryParams.append("search", filters.search);
+        queryParams.append("term", filters.search);
       }
       if (filters.min_price) {
         queryParams.append("min_price", filters.min_price);
@@ -319,30 +322,53 @@ const AppContextProvider = (props) => {
       if (filters.max_price) {
         queryParams.append("max_price", filters.max_price);
       }
+
+      // --- Category and Brand IDs (Single Selection based on API Docs) ---
       if (filters.category_ids && filters.category_ids.length > 0) {
-        filters.category_ids.forEach((id) =>
-          queryParams.append("category_id[]", id)
-        );
+        queryParams.append("category_id", filters.category_ids[0]);
       }
+
+      // --- NEW CODE: Handle Sub Category ID ---
+      if (filters.sub_category_id) {
+        queryParams.append("sub_category_id", filters.sub_category_id);
+      }
+
       if (filters.brand_ids && filters.brand_ids.length > 0) {
-        filters.brand_ids.forEach((id) => queryParams.append("brand_id[]", id));
+        queryParams.append("brand_id", filters.brand_ids[0]);
       }
-      if (filters.sort_by && filters.sort_by !== "Default") {
+
+      // --- Sort By (API-specific codes) ---
+      if (filters.sort_by && filters.sort_by !== "") {
+        // "" means 'Default' or no sort
         queryParams.append("sort_by", filters.sort_by);
-        queryParams.append("sort_order", filters.sort_order);
       }
-      if (filters.filter_by && filters.filter_by !== "Default") {
-        queryParams.append("filter_by", filters.filter_by); // Assuming your API supports this filter
+      // Removed: sort_order, as API docs imply order is within sort_by code.
+
+      // --- Special Filters (Boolean flags) ---
+      if (filters.isFlushDeal) {
+        queryParams.append("flushdeal", "true");
       }
-      // Add more filters as needed, e.g., for 'best-selling', 'top-rated' if your API handles them as query params
+      if (filters.isFeatured) {
+        queryParams.append("featured", "true");
+      }
+      if (filters.isTopRated) {
+        queryParams.append("toprated", "true");
+      }
+      if (filters.isBestSelling) {
+        queryParams.append("bestselling", "true");
+      }
+      if (filters.isLatest) {
+        // Added 'latest' based on API docs
+        queryParams.append("latest", "true");
+      }
 
       const requestUrl = `${ALL_PRODUCTS_API}?${queryParams.toString()}`;
-      console.log("Fetching products with URL:", requestUrl);
+      console.log("Fetching products with URL:", requestUrl); // CRITICAL: Check this URL in network tab
 
       try {
-        const response = await axios.get(requestUrl);
+        const response = await axios.get(API_BASE_URL + requestUrl);
         console.log("All Products API Response Status:", response.status);
-        console.log("All Products API Response Data:", response.data);
+        console.log("Raw All Products API Response Data:", response.data);
 
         if (response.data && Array.isArray(response.data.data)) {
           const productsWithFullImageUrls = response.data.data.map(
@@ -360,8 +386,9 @@ const AppContextProvider = (props) => {
               discount_price: product.discount_price
                 ? parseFloat(product.discount_price)
                 : null,
-              // Add a mock rating for sorting if the API doesn't provide it
-              rating: Math.floor(Math.random() * 5) + 1, // Random rating between 1 and 5
+              // Add a mock rating if API doesn't provide.
+              // If API has a 'rating' field, use product.rating directly.
+              rating: product.rating || Math.floor(Math.random() * 5) + 1,
             })
           );
           setAllProducts(productsWithFullImageUrls);
@@ -371,11 +398,25 @@ const AppContextProvider = (props) => {
             lastPage: response.data.last_page,
             perPage: response.data.per_page,
           });
-          console.log("All products fetched and processed successfully.");
-        } else {
-          throw new Error(
-            "API response for all products is empty or malformed."
+          console.log(
+            "All products fetched and processed successfully. Displaying:",
+            productsWithFullImageUrls.length,
+            "products."
           );
+        } else {
+          // If data.data is not an array, log the issue and clear products
+          console.warn(
+            "API response for all products 'data' property is not an array or is missing. Response:",
+            response.data
+          );
+          setAllProducts([]);
+          setAllProductsPagination({
+            total: 0,
+            currentPage: 1,
+            lastPage: 1,
+            perPage: limit,
+          });
+          // Not throwing error, just logging, as empty results are valid for filters
         }
       } catch (err) {
         console.error("Failed to fetch all products. Full error object:", err);
@@ -398,6 +439,126 @@ const AppContextProvider = (props) => {
     [ALL_PRODUCTS_API, IMAGE_BASE_URL]
   );
 
+  // --- MODIFIED fetchWishlist FUNCTION ---
+  const fetchWishlist = useCallback(
+    async (token) => {
+      if (!token) {
+        setWishlist([]);
+        setWishlistCount(0);
+        return;
+      }
+
+      try {
+        // Add cache buster to prevent caching issues
+        const cacheBuster = `_=${new Date().getTime()}`;
+        const urlWithCacheBuster = `${WISHLIST_API_URL}?${cacheBuster}`;
+
+        const response = await axios.get(API_BASE_URL + urlWithCacheBuster, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Cache-Control": "no-cache",
+            Pragma: "no-cache",
+            Expires: "0",
+          },
+        });
+
+        // Get the raw items array
+        const items = response.data.data || [];
+
+        if (Array.isArray(items)) {
+          // --- FIX: Map specifically for the nested structure ---
+          const processedItems = items.map((item) => {
+            // We create a copy of the item
+            const updatedItem = { ...item };
+
+            // Check if the 'product' object exists inside the item
+            if (updatedItem.product) {
+              updatedItem.product = {
+                ...updatedItem.product,
+                // Prepend the base URL to the feature_image inside the product object
+                feature_image: updatedItem.product.feature_image
+                  ? `${IMAGE_BASE_URL}${updatedItem.product.feature_image}`
+                  : null,
+              };
+            }
+            return updatedItem;
+          });
+          // -----------------------------------------------------
+
+          setWishlist(processedItems);
+          setWishlistCount(items.length);
+        } else {
+          setWishlist([]);
+          setWishlistCount(0);
+        }
+      } catch (err) {
+        console.error("Failed to fetch wishlist in context:", err);
+      }
+    },
+    [IMAGE_BASE_URL]
+  );
+
+  // Function to ADD an item
+  const addToWishlist = async (token, product_id, variation_id) => {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/api/user/wishlist`,
+        { product_id, variation_id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (response.data.success) {
+        toast.success(response.data.message);
+        await fetchWishlist(token);
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (err) {
+      toast.error(err.message || "Failed to add to wishlist.");
+      console.error("Add to wishlist error:", err);
+    }
+  };
+
+  // Function to REMOVE an item - CORRECTED
+  const removeFromWishlist = async (token, wishlistItemId) => {
+    try {
+      const response = await axios.delete(
+        `${API_BASE_URL}${WISHLIST_API_URL}/${wishlistItemId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (response.data.success) {
+        toast.success(response.data.message);
+        await fetchWishlist(token);
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (err) {
+      toast.error(err.message || "Failed to remove from wishlist.");
+      console.error("Remove from wishlist error:", err);
+    }
+  };
+
+  const clearWishlist = async (token) => {
+    try {
+      await axios.post(
+        `${API_BASE_URL}/api/user/wishlist/clear`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setWishlist([]);
+      setWishlistCount(0);
+      toast.success("Wishlist cleared successfully!");
+    } catch (error) {
+      console.error("Error clearing wishlist:", error);
+      toast.error("Failed to clear wishlist.");
+    }
+  };
+
   useEffect(() => {
     console.log(
       "AppContextProvider mounted. Initiating homepage data fetch..."
@@ -406,8 +567,8 @@ const AppContextProvider = (props) => {
   }, [fetchHomePageData]);
 
   const value = {
-    loading, // Global loading for initial app load (homepage)
-    error, // Global error for initial app load (homepage)
+    loading,
+    error,
     IMAGE_BASE_URL,
     homePageCategories,
     allCategories,
@@ -419,13 +580,21 @@ const AppContextProvider = (props) => {
     featured,
     firstBanner,
     secondBanner,
-    allProducts, // New: all products data
-    allProductsPagination, // New: pagination info for all products
+    allProducts,
+    allProductsPagination,
     fetchAllCategoriesData,
     fetchBrandsData,
     fetchSubCategoriesData,
     fetchProductById,
-    fetchAllProductsData, // New: function to fetch all products
+    fetchAllProductsData,
+    wishlist,
+    wishlistCount,
+    fetchWishlist,
+    addToWishlist,
+    removeFromWishlist,
+    clearWishlist,
+    isCategorySidebarOpen,
+    toggleCategorySidebar,
   };
 
   return (

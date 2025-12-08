@@ -19,6 +19,167 @@ body {
   /* border: 1px solid #e0e0e0;  */
 }
 
+/* --- Core Radio Button Styles (Unified for left-aligned) --- */
+/* The container for custom radio buttons */
+.radio-container-left {
+  display: flex; /* Use flexbox for horizontal alignment */
+  align-items: center; /* Vertically center the radio and text */
+  position: relative;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  padding-left: 0; /* Remove padding from the container itself */
+  width: 100%;
+}
+
+/* Hide the browser's default radio button */
+.radio-container-left input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom radio button */
+.radio-container-left .radiomark {
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  flex-shrink: 0; /* Prevent radiomark from shrinking */
+  margin-right: 10px; /* Space between radio button and text/details */
+}
+
+/* On mouse-over, add a grey background color */
+.radio-container-left:hover input ~ .radiomark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.radio-container-left input:checked ~ .radiomark {
+  background-color: #1455ac;
+  border-color: #1455ac;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.radio-container-left .radiomark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  top: 6px;
+  left: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.radio-container-left input:checked ~ .radiomark:after {
+  display: block;
+}
+
+/* --- Shipping Method Specific Styles --- */
+/* (Keep .shipping-methods-list-wrapper, .shipping-method-header, .arrow-icon as they are) */
+
+.shipping-option-item {
+  padding: 12px 20px;
+  border-bottom: 1px solid #eee;
+  background-color: #fff;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.shipping-option-item:last-child {
+  border-bottom: none;
+}
+
+.shipping-option-item:hover {
+  background-color: #f9f9f9;
+}
+
+.shipping-option-item.selected {
+  background-color: #e7f0ff;
+  border-left: 3px solid #007bff;
+}
+
+.shipping-option-item .radio-container-left {
+  /* No padding-left needed here anymore */
+}
+
+.shipping-option-item .method-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+  /* margin-left: 10px; -- This is now handled by radiomark's margin-right */
+}
+
+.shipping-option-item .method-name {
+  font-weight: 500;
+  color: #333;
+}
+
+.shipping-option-item .shipping-price {
+  font-weight: 600;
+  color: #007bff;
+  white-space: nowrap;
+  margin-left: 15px;
+}
+
+/* --- Address Option Specific Styles --- */
+/* (Keep .saved-addresses-list as it is) */
+
+.address-option {
+  padding: 12px 20px; /* Consistent padding */
+  border-bottom: 1px solid #eee;
+  background-color: #fff;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.address-option:last-child {
+  border-bottom: none;
+}
+
+.address-option:hover {
+  background-color: #f9f9f9;
+}
+
+.address-option.selected {
+  background-color: #e7f0ff;
+  border-left: 3px solid #007bff;
+}
+
+.address-option .radio-container-left {
+  /* No padding-left needed here anymore */
+}
+
+.address-option .address-details {
+  flex-grow: 1;
+  margin-left: 25px;
+  color: #333;
+  font-size: 0.95em;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline; /* Align address text and badge on the same baseline */
+}
+
+.default-badge {
+  background-color: #28a745;
+  color: white;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-size: 0.75em;
+  margin-left: 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 /* Left Section: Form and Details */
 .checkout-form-section {
   flex: 2.8;
@@ -43,17 +204,96 @@ h3 {
   color: #2c3e50; /* Darker heading color */
 }
 
-.log-in {
-  color: #1455ac;
-  text-decoration: none;
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: color 0.2s ease;
+/* --- Address Option Specific Styles --- */
+.saved-addresses-list {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 15px;
 }
 
-.log-in:hover {
-  color: #007bff;
+.address-option {
+  display: flex;
+  padding: 12px 20px; /* Consistent padding with shipping options */
+  border-bottom: 1px solid #eee;
+  background-color: #fff;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.add-address-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.address-option:last-child {
+  border-bottom: none;
+}
+
+.address-option:hover {
+  background-color: #f9f9f9;
+}
+
+.address-option.selected {
+  background-color: #e7f0ff;
+  border-left: 3px solid #007bff;
+}
+
+/* The .radio-container-left for addresses already includes basic left-radio styling */
+
+.address-option .address-details {
+  flex-grow: 1; /* Allows the details to take up remaining space */
+  margin-left: 25px; /* Space between radio button and address text */
+  color: #333;
+  font-size: 0.95em;
+  display: flex; /* Use flexbox to align text and badge */
+  justify-content: space-between; /* Pushes the default badge to the right */
+  align-items: center; /* Vertically aligns text and badge */
+}
+
+/* Ensure the radio container also works for the main shipping method section */
+.shipping-option .radio-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.shipping-option .radiomark {
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border-radius: 50%;
+  position: relative;
+  border: 1px solid #ccc;
+  flex-shrink: 0;
+}
+
+.shipping-option input:checked ~ .radiomark {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.shipping-option input:checked ~ .radiomark:after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+.shipping-option input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
 }
 
 .delivery-section h3,
@@ -196,8 +436,7 @@ h3 {
 .shipping-method-section,
 .payment-section {
   margin-top: 35px; /* More separation */
-  padding-top: 30px;
-  border-top: 1px solid #e0e0e0;
+  /* border-top: 1px solid #e0e0e0; */
 }
 
 .shipping-option,
@@ -332,6 +571,14 @@ h3 {
   box-shadow: 0px 0px 2px rgba(0, 113, 220, 0.15); */
 }
 
+.store-logo-link {
+  text-decoration: none;
+}
+
+.store-logo-link :hover {
+  text-decoration: none;
+}
+
 .store-logo {
   display: flex;
   justify-content: center;
@@ -346,7 +593,7 @@ h3 {
 }
 .ecom-name {
   color: #1455ac;
-  font-size: 20px;
+  font-size: 25px;
   font-weight: 500;
   padding-top: 16px;
 }
@@ -418,6 +665,96 @@ h3 {
 
 .total-row .total-amount {
   color: #28a745; /* Green for total amount */
+}
+
+/* --- New Styles for Collapsible Shipping Section --- */
+.shipping-method-section {
+  margin-bottom: 25px;
+  background-color: #fff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0; /* Add a border to the whole section */
+  overflow: hidden; /* Important for animation and border-radius */
+}
+
+.shipping-method-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #fff; /* Light background for the header */
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.shipping-method-header:hover {
+  background-color: #f1f1f1;
+}
+
+.shipping-method-header h3 {
+  margin: 0; /* Remove default margin from h3 */
+  font-size: 1.1em;
+  color: #333;
+}
+
+.arrow-icon {
+  transition: transform 0.3s ease;
+  font-size: 1em;
+  color: #666;
+}
+
+.arrow-icon.open {
+  transform: rotate(180deg);
+}
+
+.shipping-methods-list-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out; /* Animation for expansion */
+}
+
+.shipping-methods-list-wrapper.open {
+  max-height: 500px; /* A value larger than the expected height of content */
+  transition: max-height 0.4s ease-in;
+}
+
+/* Existing .shipping-methods-list styles need to be slightly adjusted if they had their own border */
+/* Remove border from .shipping-methods-list, as the wrapper now has it */
+.shipping-methods-list {
+  border: none; /* Remove this border as the parent wrapper has it now */
+  border-radius: 0; /* No border radius here */
+  margin-top: 0; /* Remove top margin */
+}
+
+.shipping-option-item {
+  padding: 12px 20px; /* Adjust padding to match header */
+  border-bottom: 1px solid #eee; /* Separator between items */
+  background-color: #fff;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+/* Ensure the .selected state for shipping-option-item is visually distinct */
+.shipping-option-item.selected {
+  background-color: #e7f0ff;
+  border-left: 3px solid #007bff;
+}
+
+/* Adjust .radio-container-left within shipping options if needed for padding */
+.shipping-option-item .radio-container-left {
+  padding-left: 30px; /* Space for the custom radio button */
+}
+
+/* Ensure price and method name are properly aligned in shipping methods */
+.shipping-option-item .method-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+  margin-left: 10px;
+}
+
+.selected-cards {
+  padding-left: 30px;
 }
 
 /* Responsive adjustments */

@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import "./categoryPages.css";
 import { AppContext } from "../context/AppContext";
 import { Spinner, Alert } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const truncateText = (text, maxLength) => {
   if (text && text.length > maxLength) {
@@ -14,6 +15,19 @@ const truncateText = (text, maxLength) => {
 const CategoryPages = () => {
   const [searchParams] = useSearchParams();
   const initialSection = searchParams.get("section");
+  const paramCategoryId = searchParams.get("category_id");
+  const paramSubCategoryId = searchParams.get("sub_category_id");
+  const paramBrandId = searchParams.get("brand_id");
+  const navigate = useNavigate();
+  const MAX_PRICE_LIMIT = 1000;
+  const [priceInput, setPriceInput] = useState({
+    min: 0,
+    max: MAX_PRICE_LIMIT,
+  });
+
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
 
   const {
     allCategories,
@@ -26,44 +40,117 @@ const CategoryPages = () => {
     error: appGlobalError,
     fetchAllCategoriesData,
     fetchBrandsData,
-    allProducts, // From AppContext
-    allProductsPagination, // From AppContext
-    fetchAllProductsData, // From AppContext
+    allProducts,
+    allProductsPagination,
+    fetchAllProductsData,
   } = useContext(AppContext);
 
+  const API_DEFAULT_LIMIT = 25;
+
+  // --- FIX 1: Correctly initialize brand_ids from URL param ---
   const [filters, setFilters] = useState({
     search: "",
     min_price: "",
     max_price: "",
-    category_ids: [], // Array to hold selected category IDs
-    brand_ids: [], // Array to hold selected brand IDs
-    sort_by: "Default", // Corresponds to API parameter (e.g., 'name', 'unit_price')
-    sort_order: "asc", // Corresponds to API parameter ('asc', 'desc')
-    filter_by: "Default", // For special API filters like 'best-selling', 'top-rated' if your API supports it
+    fromPageCategory_ids: paramCategoryId ? [paramCategoryId] : [],
+    sub_category_id: paramSubCategoryId || "",
+    category_ids: [],
+    brand_ids: paramBrandId ? [paramBrandId] : [],
+    sort_by: "",
+    isBestSelling: false,
+    isTopRated: false,
+    isFlushDeal: false,
+    isFeatured: false,
+    isLatest: false,
     page: 1,
-    limit: 25, // Matches the API's default per_page or your desired limit
+    limit: API_DEFAULT_LIMIT,
   });
 
+  const [localSearchTerm, setLocalSearchTerm] = useState("");
   const [productsLoading, setProductsLoading] = useState(false);
   const [productsError, setProductsError] = useState(null);
-
   const [localCategoriesLoading, setLocalCategoriesLoading] = useState(true);
   const [localCategoriesError, setLocalCategoriesError] = useState(null);
   const [localBrandsLoading, setLocalBrandsLoading] = useState(true);
   const [localBrandsError, setLocalBrandsError] = useState(null);
-  const [searchTermLocal, setSearchTermLocal] = useState(""); // For brand search filter in sidebar
+  const [searchTermLocal, setSearchTermLocal] = useState("");
+  const [currentHomepageSectionProducts, setCurrentHomepageSectionProducts] =
+    useState([]);
 
-  // Fetch categories and brands for the sidebar filters
+  const isInitialMount = useRef(true);
+
   useEffect(() => {
     fetchAllCategoriesData(setLocalCategoriesLoading, setLocalCategoriesError);
     fetchBrandsData(setLocalBrandsLoading, setLocalBrandsError);
   }, [fetchAllCategoriesData, fetchBrandsData]);
 
+  useEffect(() => {
+    const paramCategoryId = searchParams.get("category_id");
+    const paramSubCategoryId = searchParams.get("sub_category_id");
+    const paramBrandId = searchParams.get("brand_id");
+
+    // If URL has params, update state immediately
+    if (paramCategoryId || paramSubCategoryId || paramBrandId) {
+      setFilters((prev) => ({
+        ...prev,
+        fromPageCategory_ids: paramCategoryId ? [paramCategoryId] : [],
+        category_ids: [],
+        sub_category_id: paramSubCategoryId || "",
+        brand_ids: paramBrandId ? [paramBrandId] : [],
+        page: 1,
+        search: "",
+        isBestSelling: false,
+        isTopRated: false,
+        isFlushDeal: false,
+        isFeatured: false,
+        isLatest: false,
+        min_price: "",
+        max_price: "",
+      }));
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    setPriceInput({
+      min: filters.min_price !== "" ? Number(filters.min_price) : 0,
+      max:
+        filters.max_price !== "" ? Number(filters.max_price) : MAX_PRICE_LIMIT,
+    });
+  }, [filters.min_price, filters.max_price]);
+
   // Main effect to fetch products based on filters
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      if (!initialSection && !filters.search) {
+        console.log(
+          "CategoryPages useEffect: Initial mount with no section or search. Skipping fetch."
+        );
+      }
+    }
+
     const fetchAndSetProducts = async () => {
-      // Determine if the current view is one of the pre-fetched homepage sections
-      const isHomepageSection =
+      console.log(
+        "CategoryPages useEffect triggered. Current filters:",
+        filters
+      );
+
+      const hasDynamicFilters =
+        filters.search ||
+        filters.min_price ||
+        filters.max_price ||
+        filters.category_ids.length > 0 ||
+        filters.fromPageCategory_ids.length > 0 ||
+        filters.sub_category_id ||
+        filters.brand_ids.length > 0 ||
+        filters.sort_by !== "" ||
+        filters.isBestSelling ||
+        filters.isTopRated ||
+        filters.isFlushDeal ||
+        filters.isFeatured ||
+        filters.isLatest;
+
+      const isPureHomepageSection =
         initialSection &&
         [
           "flash-deals",
@@ -71,15 +158,9 @@ const CategoryPages = () => {
           "latest-products",
           "top-rated",
         ].includes(initialSection) &&
-        !filters.search &&
-        !filters.min_price &&
-        !filters.max_price &&
-        filters.category_ids.length === 0 &&
-        filters.brand_ids.length === 0 &&
-        filters.sort_by === "Default" &&
-        filters.filter_by === "Default";
+        !hasDynamicFilters;
 
-      if (isHomepageSection) {
+      if (isPureHomepageSection) {
         let sourceProducts = [];
         switch (initialSection) {
           case "flash-deals":
@@ -98,15 +179,11 @@ const CategoryPages = () => {
             sourceProducts = [];
             break;
         }
-        // These are already processed with IMAGE_BASE_URL in AppContext
         setProductsLoading(false);
         setProductsError(null);
-        // Note: When displaying pre-fetched products, pagination might not apply directly
-        // You might need to implement local pagination if these lists are very long
-        // For simplicity, we'll display all of them for now.
+        setCurrentHomepageSectionProducts(sourceProducts);
       } else {
-        // If it's not a pre-fetched homepage section OR if any filter is applied,
-        // use the main products API call with filters.
+        setCurrentHomepageSectionProducts([]);
         await fetchAllProductsData(
           setProductsLoading,
           setProductsError,
@@ -117,10 +194,15 @@ const CategoryPages = () => {
             min_price: filters.min_price,
             max_price: filters.max_price,
             category_ids: filters.category_ids,
+            fromPageCategory_ids: filters.fromPageCategory_ids,
+            sub_category_id: filters.sub_category_id,
             brand_ids: filters.brand_ids,
             sort_by: filters.sort_by,
-            sort_order: filters.sort_order,
-            filter_by: filters.filter_by,
+            isBestSelling: filters.isBestSelling,
+            isTopRated: filters.isTopRated,
+            isFlushDeal: filters.isFlushDeal,
+            isFeatured: filters.isFeatured,
+            isLatest: filters.isLatest,
           }
         );
       }
@@ -135,116 +217,136 @@ const CategoryPages = () => {
     featured,
     latests,
     topRated,
-    // dependencies for pre-fetched sections if `isHomepageSection` is true
+    setProductsLoading,
+    setProductsError,
+    setCurrentHomepageSectionProducts,
   ]);
 
-  const handleSortChange = (e) => {
-    const value = e.target.value;
-    let sortBy = "Default";
-    let sortOrder = "asc";
+  const handleSearchInputChange = (e) => {
+    setLocalSearchTerm(e.target.value);
+  };
 
-    switch (value) {
-      case "Price: Low to High":
-        sortBy = "unit_price"; // Assuming your API understands 'unit_price' for sorting
-        sortOrder = "asc";
-        break;
-      case "Price: High to Low":
-        sortBy = "unit_price";
-        sortOrder = "desc";
-        break;
-      case "Name: A to Z":
-        sortBy = "name"; // Assuming your API understands 'name' for sorting
-        sortOrder = "asc";
-        break;
-      case "Name: Z to A":
-        sortBy = "name";
-        sortOrder = "desc";
-        break;
-      // If your API supports rating sort, add cases for it, e.g.:
-      case "Rating: Low to High":
-        sortBy = "rating";
-        sortOrder = "asc";
-        break;
-      case "Rating: High to Low":
-        sortBy = "rating";
-        sortOrder = "desc";
-        break;
-      default:
-        sortBy = "Default";
-        sortOrder = "asc";
-        break;
-    }
+  const handleSearchSubmit = () => {
+    console.log(
+      "Search button clicked. Submitting search term:",
+      localSearchTerm
+    );
     setFilters((prev) => ({
       ...prev,
-      sort_by: sortBy,
-      sort_order: sortOrder,
-      page: 1, // Reset to first page on sort change
+      search: localSearchTerm,
+      page: 1,
     }));
   };
 
-  const handleFilterByChange = (e) => {
+  const handleSortChange = (e) => {
+    setFilters((prev) => ({ ...prev, sort_by: e.target.value, page: 1 }));
+    setLocalSearchTerm("");
+  };
+
+  const handleSpecialFilterChange = (e) => {
     const value = e.target.value;
     setFilters((prev) => ({
       ...prev,
-      filter_by: value,
-      page: 1, // Reset to first page on filter change
+      isBestSelling: value === "best-selling",
+      isTopRated: value === "top-rated",
+      isFlushDeal: value === "flush-deals",
+      isFeatured: value === "featured-products",
+      isLatest: value === "latest-products",
+      page: 1,
+      ...(value !== "best-selling" && { isBestSelling: false }),
+      ...(value !== "top-rated" && { isTopRated: false }),
+      ...(value !== "flush-deals" && { isFlushDeal: false }),
+      ...(value !== "featured-products" && { isFeatured: false }),
+      ...(value !== "latest-products" && { isLatest: false }),
+      search: "",
+      min_price: "",
+      max_price: "",
+      category_ids: [],
+      brand_ids: [],
     }));
+    setLocalSearchTerm("");
   };
 
   const handleCategoryClick = (categoryId) => {
     setFilters((prev) => {
-      const currentCategoryIds = prev.category_ids;
-      if (currentCategoryIds.includes(categoryId)) {
-        return {
-          ...prev,
-          category_ids: currentCategoryIds.filter((id) => id !== categoryId), // Remove if already selected
-          page: 1, // Reset to first page on filter change
-        };
-      } else {
-        return {
-          ...prev,
-          category_ids: [...currentCategoryIds, categoryId], // Add if not selected
-          page: 1, // Reset to first page on filter change
-        };
-      }
+      const isAlreadySelected = prev.category_ids.includes(categoryId);
+      return {
+        ...prev,
+        category_ids: isAlreadySelected ? [] : [categoryId],
+        page: 1,
+        isBestSelling: false,
+        isTopRated: false,
+        isFlushDeal: false,
+        isFeatured: false,
+        isLatest: false,
+        search: "",
+        min_price: "",
+        max_price: "",
+        brand_ids: [],
+        fromPageCategory_ids: [],
+        sub_category_id: "",
+      };
     });
+    setLocalSearchTerm("");
   };
 
   const handleBrandClick = (brandId) => {
     setFilters((prev) => {
-      const currentBrandIds = prev.brand_ids;
-      if (currentBrandIds.includes(brandId)) {
-        return {
-          ...prev,
-          brand_ids: currentBrandIds.filter((id) => id !== brandId), // Remove if already selected
-          page: 1, // Reset to first page on filter change
-        };
-      } else {
-        return {
-          ...prev,
-          brand_ids: [...currentBrandIds, brandId], // Add if not selected
-          page: 1, // Reset to first page on filter change
-        };
-      }
+      const isAlreadySelected = prev.brand_ids.includes(brandId);
+      return {
+        ...prev,
+        brand_ids: isAlreadySelected ? [] : [brandId],
+        page: 1,
+        isBestSelling: false,
+        isTopRated: false,
+        isFlushDeal: false,
+        isFeatured: false,
+        isLatest: false,
+        search: "",
+        min_price: "",
+        max_price: "",
+        category_ids: [],
+      };
+    });
+    setLocalSearchTerm("");
+  };
+
+  // Handle typing in inputs
+  const handleLocalPriceInputChange = (e, type) => {
+    let val = Number(e.target.value);
+    if (val < 0) val = 0;
+    if (val > MAX_PRICE_LIMIT) val = MAX_PRICE_LIMIT;
+
+    setPriceInput((prev) => ({ ...prev, [type]: val }));
+  };
+
+  // Handle Slider Changes
+  const handleSliderChange = (e) => {
+    const val = Number(e.target.value);
+    const name = e.target.name; // "min" or "max"
+
+    setPriceInput((prev) => {
+      // Prevent crossing logic (min > max)
+      if (name === "min" && val > prev.max) return { ...prev, min: prev.max };
+      if (name === "max" && val < prev.min) return { ...prev, max: prev.min };
+      return { ...prev, [name]: val };
     });
   };
 
-  const handleSearchInputChange = (e) => {
+  // Apply Button Click
+  const applyPriceFilter = () => {
     setFilters((prev) => ({
       ...prev,
-      search: e.target.value,
-      page: 1, // Reset to first page on search change
+      min_price: priceInput.min,
+      max_price: priceInput.max,
+      page: 1,
     }));
   };
 
-  const handlePriceChange = (e, type) => {
-    const value = e.target.value;
-    setFilters((prev) => ({
-      ...prev,
-      [`${type}_price`]: value,
-      page: 1, // Reset to first page on price change
-    }));
-  };
+  // Calculate percentage for slider track background
+  const getPercent = (value) => Math.round((value / MAX_PRICE_LIMIT) * 100);
+  const minPercent = getPercent(priceInput.min);
+  const maxPercent = getPercent(priceInput.max);
 
   const filteredBrandsForUI = allBrands.filter((brand) =>
     brand.name.toLowerCase().includes(searchTermLocal.toLowerCase())
@@ -282,7 +384,19 @@ const CategoryPages = () => {
     );
   }
 
-  // Determine which product list to display based on initialSection or dynamic filters
+  const hasActiveFiltersExcludingHomepageSection =
+    filters.search ||
+    filters.min_price ||
+    filters.max_price ||
+    filters.category_ids.length > 0 ||
+    filters.brand_ids.length > 0 ||
+    filters.sort_by !== "" ||
+    filters.isBestSelling ||
+    filters.isTopRated ||
+    filters.isFlushDeal ||
+    filters.isFeatured ||
+    filters.isLatest;
+
   const productsToDisplay =
     initialSection &&
     [
@@ -291,51 +405,26 @@ const CategoryPages = () => {
       "latest-products",
       "top-rated",
     ].includes(initialSection) &&
-    !filters.search &&
-    !filters.min_price &&
-    !filters.max_price &&
-    filters.category_ids.length === 0 &&
-    filters.brand_ids.length === 0 &&
-    filters.sort_by === "Default" &&
-    filters.filter_by === "Default"
-      ? (() => {
-          switch (initialSection) {
-            case "flash-deals":
-              return flushDeals;
-            case "featured-products":
-              return featured;
-            case "latest-products":
-              return latests;
-            case "top-rated":
-              return topRated;
-            default:
-              return [];
-          }
-        })()
-      : allProducts; // Otherwise, use the dynamically fetched products
+    !hasActiveFiltersExcludingHomepageSection
+      ? currentHomepageSectionProducts
+      : allProducts;
 
-  const currentPagination =
-    initialSection &&
-    [
-      "flash-deals",
-      "featured-products",
-      "latest-products",
-      "top-rated",
-    ].includes(initialSection) &&
-    !filters.search &&
-    !filters.min_price &&
-    !filters.max_price &&
-    filters.category_ids.length === 0 &&
-    filters.brand_ids.length === 0 &&
-    filters.sort_by === "Default" &&
-    filters.filter_by === "Default"
-      ? {
-          total: productsToDisplay.length,
-          currentPage: 1,
-          limit: productsToDisplay.length,
-          lastPage: 1,
-        }
-      : allProductsPagination;
+  const isShowingDynamicallyFetchedProducts =
+    !initialSection || hasActiveFiltersExcludingHomepageSection;
+
+  const currentPagination = isShowingDynamicallyFetchedProducts
+    ? {
+        total: allProductsPagination.total || 0,
+        currentPage: allProductsPagination.current_page || 1,
+        limit: allProductsPagination.per_page || API_DEFAULT_LIMIT,
+        lastPage: allProductsPagination.last_page || 1,
+      }
+    : {
+        total: productsToDisplay.length,
+        currentPage: 1,
+        limit: productsToDisplay.length,
+        lastPage: 1,
+      };
 
   return (
     <div className="mainContainer">
@@ -350,10 +439,19 @@ const CategoryPages = () => {
             type="text"
             placeholder="Search for items..."
             className="search-input"
-            value={filters.search}
+            value={localSearchTerm}
             onChange={handleSearchInputChange}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                handleSearchSubmit();
+              }
+            }}
           />
-          <button className="search-button">
+          <button
+            type="button"
+            className="search-button"
+            onClick={handleSearchSubmit}
+          >
             <i className="fas fa-search"></i>
           </button>
         </div>
@@ -362,45 +460,44 @@ const CategoryPages = () => {
           <select
             className="sorting-item"
             onChange={handleSortChange}
-            value={
-              filters.sort_by === "unit_price" && filters.sort_order === "asc"
-                ? "Price: Low to High"
-                : filters.sort_by === "unit_price" &&
-                  filters.sort_order === "desc"
-                ? "Price: High to Low"
-                : filters.sort_by === "name" && filters.sort_order === "asc"
-                ? "Name: A to Z"
-                : filters.sort_by === "name" && filters.sort_order === "desc"
-                ? "Name: Z to A"
-                : filters.sort_by === "rating" && filters.sort_order === "asc"
-                ? "Rating: Low to High"
-                : filters.sort_by === "rating" && filters.sort_order === "desc"
-                ? "Rating: High to Low"
-                : "Default"
-            }
+            value={filters.sort_by}
           >
-            <option value="Default">Sort by Default</option>
-            <option value="Price: Low to High">Price: Low to High</option>
-            <option value="Price: High to Low">Price: High to Low</option>
-            <option value="Name: A to Z">Name: A to Z</option>
-            <option value="Name: Z to A">Name: Z to A</option>
-            <option value="Rating: Low to High">Rating: Low to High</option>
-            <option value="Rating: High to Low">Rating: High to Low</option>
+            <option value="">Sort by Default</option>
+
+            {/* Verify if your API actually supports 'price_low_high' */}
+            <option value="price_low_high">Price: Low to High</option>
+
+            <option value="price_high_low">Price: High to Low</option>
+            <option value="name_a_z">Name: A to Z</option>
+            <option value="name_z_a">Name: Z to A</option>
+            <option value="rating_low_high">Rating: Low to High</option>
+            <option value="rating_high_low">Rating: High to Low</option>
           </select>
         </div>
         <div className="sort-by-containerr">
           <select
             className="sorting-item"
-            onChange={handleFilterByChange}
-            value={filters.filter_by}
+            onChange={handleSpecialFilterChange}
+            value={
+              filters.isBestSelling
+                ? "best-selling"
+                : filters.isTopRated
+                ? "top-rated"
+                : filters.isFlushDeal
+                ? "flush-deals"
+                : filters.isFeatured
+                ? "featured-products"
+                : filters.isLatest
+                ? "latest-products"
+                : "Default"
+            }
           >
             <option value="Default">Filter by Default</option>
             <option value="best-selling">Best Selling</option>
             <option value="top-rated">Top Rated</option>
-            <option value="flush-deals">Flush Deals</option>{" "}
-            {/* Adjusted value */}
-            <option value="featured-products">Featured Products</option>{" "}
-            {/* Adjusted value */}
+            <option value="flush-deals">Flush Deals</option>
+            <option value="featured-products">Featured Products</option>
+            <option value="latest-products">Latest Products</option>
           </select>
         </div>
         <div className="menu-display">
@@ -410,33 +507,73 @@ const CategoryPages = () => {
       <div className="containerForSideFilterProducts">
         <div className="sideFilter">
           <h5 className="filterBy">Filter by</h5>
-          <h6 className="productBy">Product Type</h6>
+          {/* <h6 className="productBy">Product Type</h6> */}
           <div className="sort-by-containerr">All Products</div>
           <div className="filter-group">
             <h4 className="productBy">Price</h4>
-            <div className="price-inputs">
-              <input
-                type="number"
-                className="price-input"
-                placeholder="Min"
-                value={filters.min_price}
-                onChange={(e) => handlePriceChange(e, "min")}
-              />
-              <span>-</span>
-              <input
-                type="number"
-                className="price-input"
-                placeholder="Max"
-                value={filters.max_price}
-                onChange={(e) => handlePriceChange(e, "max")}
-              />
-              <div className="icon-display">
-                <i className="fa fa-chevron-right"></i>
+
+            {/* PRICE INPUTS & BUTTON */}
+            <div className="price-inputs-container">
+              <div className="price-input-wrapper">
+                <span className="price-label">Min</span>
+                <input
+                  type="number"
+                  className="custom-price-input"
+                  value={priceInput.min}
+                  onChange={(e) => handleLocalPriceInputChange(e, "min")}
+                />
               </div>
+              <span className="price-separator">-</span>
+              <div className="price-input-wrapper">
+                <span className="price-label">Max</span>
+                <input
+                  type="number"
+                  className="custom-price-input"
+                  value={priceInput.max}
+                  onChange={(e) => handleLocalPriceInputChange(e, "max")}
+                />
+              </div>
+              <button className="price-apply-btn" onClick={applyPriceFilter}>
+                <i className="fa fa-chevron-right"></i>
+              </button>
             </div>
-            <div className="range-slider-mock">
-              <input type="range" min="0" max="5000" className="slider-min" />
-              <div className="slider-track"></div>
+
+            {/* DOUBLE SLIDER */}
+            <div className="range-slider-container">
+              {/* The Range Inputs (Invisible but clickable) */}
+              <input
+                type="range"
+                name="min"
+                min={0}
+                max={MAX_PRICE_LIMIT}
+                value={priceInput.min}
+                onChange={handleSliderChange}
+                className="thumb thumb--left"
+                style={{
+                  zIndex: priceInput.min > MAX_PRICE_LIMIT - 100 && "5",
+                }}
+              />
+              <input
+                type="range"
+                name="max"
+                min={0}
+                max={MAX_PRICE_LIMIT}
+                value={priceInput.max}
+                onChange={handleSliderChange}
+                className="thumb thumb--right"
+              />
+
+              {/* The Visual Track */}
+              <div className="slider">
+                <div className="slider__track" />
+                <div
+                  className="slider__range"
+                  style={{
+                    left: `${minPercent}%`,
+                    width: `${maxPercent - minPercent}%`,
+                  }}
+                />
+              </div>
             </div>
           </div>
           <div className="category-section">
@@ -512,7 +649,9 @@ const CategoryPages = () => {
                 {filteredBrandsForUI.map((brand) => (
                   <div
                     key={brand.id}
+                    // Check string vs number types for highlighting
                     className={`brands-items ${
+                      filters.brand_ids.includes(String(brand.id)) ||
                       filters.brand_ids.includes(brand.id)
                         ? "active-filter"
                         : ""
@@ -550,7 +689,11 @@ const CategoryPages = () => {
           <div className="LatestProducts-grid">
             {productsToDisplay.length > 0 ? (
               productsToDisplay.map((product) => (
-                <div className="LatestProducts-card" key={product.id}>
+                <div
+                  className="LatestProducts-card"
+                  key={product.id}
+                  onClick={() => handleProductClick(product.id)}
+                >
                   <div className="LatestProducts-image-container">
                     <img
                       src={product.feature_image || product.image}
@@ -560,45 +703,44 @@ const CategoryPages = () => {
                   </div>
                   <h3 className="LatestProducts-productName">{product.name}</h3>
                   <p className="LatestProducts-productPrice">
-                    ${product.unit_price}
+                    Rs.{product.unit_price}
                   </p>
-                  {/* You can add a rating display here if product.rating is available */}
-                  {product.rating && <p>Rating: {product.rating}/5</p>}
                 </div>
               ))
             ) : (
               <p>No products available matching your criteria.</p>
             )}
           </div>
-          {currentPagination.total > currentPagination.limit && ( // Only show pagination if there are more items than current limit
-            <div className="pagination-controls mt-4 d-flex justify-content-center align-items-center">
-              <button
-                className="btn btn-outline-secondary me-2"
-                onClick={() =>
-                  setFilters((prev) => ({ ...prev, page: prev.page - 1 }))
-                }
-                disabled={currentPagination.currentPage === 1}
-              >
-                Previous
-              </button>
-              <span className="text-muted">
-                {" "}
-                Page {currentPagination.currentPage} of{" "}
-                {currentPagination.lastPage}{" "}
-              </span>
-              <button
-                className="btn btn-outline-secondary ms-2"
-                onClick={() =>
-                  setFilters((prev) => ({ ...prev, page: prev.page + 1 }))
-                }
-                disabled={
-                  currentPagination.currentPage >= currentPagination.lastPage
-                }
-              >
-                Next
-              </button>
-            </div>
-          )}
+          {isShowingDynamicallyFetchedProducts &&
+            currentPagination.lastPage > 1 && (
+              <div className="pagination-controls mt-4 d-flex justify-content-center align-items-center">
+                <button
+                  className="btn btn-outline-secondary me-2"
+                  onClick={() =>
+                    setFilters((prev) => ({ ...prev, page: prev.page - 1 }))
+                  }
+                  disabled={currentPagination.currentPage === 1}
+                >
+                  Previous
+                </button>
+                <span className="text-muted">
+                  {" "}
+                  Page {currentPagination.currentPage} of{" "}
+                  {currentPagination.lastPage}{" "}
+                </span>
+                <button
+                  className="btn btn-outline-secondary ms-2"
+                  onClick={() =>
+                    setFilters((prev) => ({ ...prev, page: prev.page + 1 }))
+                  }
+                  disabled={
+                    currentPagination.currentPage >= currentPagination.lastPage
+                  }
+                >
+                  Next
+                </button>
+              </div>
+            )}
         </div>
       </div>
     </div>

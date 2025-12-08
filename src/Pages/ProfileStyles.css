@@ -1,0 +1,232 @@
+/* ProfileStyles.css */
+
+/* For the main content container */
+.custom-container-width {
+  max-width: 1200px;
+}
+
+/* For the sidebar card */
+.customer-sidebar,
+.profile-container {
+  padding: 20px 19px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid rgba(27, 127, 237, 0.1);
+  box-shadow: 0px 9.0754146576px 18.1508293152px -2.7226247787px rgba(145, 158, 171, 0.05),
+    0px 0px 1.8150832653px 0px rgba(145, 158, 171, 0.2);
+  position: sticky;
+  top: 80px;
+}
+
+/* Style for labels */
+.profile-container .form-label {
+  color: #555555; /* Darker grey color for labels */
+  font-size: 15px; /* Slightly larger font size for labels */
+  font-weight: 500; /* Medium font weight */
+}
+
+/* Style for input borders */
+.profile-container .form-control {
+  border-color: #e0e0e0; /* Light grey border color */
+}
+
+/* Style for input borders on focus (to override Bootstrap's default blue focus) */
+.profile-container .form-control:focus {
+  border-color: #1b7fed; /* Example: use the blue from the sidebar highlight */
+  box-shadow: 0 0 0 0.25rem rgba(27, 127, 237, 0.25); /* Subtle shadow matching the border color */
+}
+
+/* Style for placeholders */
+.profile-container .form-control::placeholder {
+  color: #9b9b9b; /* Grey color for placeholders */
+  font-size: 14px; /* Adjust placeholder font size */
+}
+/* For InputGroup.Text (e.g., +92) */
+.profile-container .input-group-text {
+  border-color: #e0e0e0; /* Match input border color */
+}
+
+/* Default style for all navigation links */
+.customer-sidebar .nav-link {
+  color: #9b9b9b !important; /* Set default color for all links */
+  font-size: 14px; /* Set default font size for all links */
+}
+
+/* Style for the active navigation link (overrides default link style) */
+.customer-sidebar .nav-link.active {
+  color: #1455ac !important; /* Active link color */
+  font-weight: bold;
+  background-color: rgba(
+    27,
+    127,
+    237,
+    0.05
+  ); /* Light background for highlight */
+  border-radius: 5px; /* Slightly rounded corners for the highlight */
+}
+
+.customer-sidebar .nav-link.active svg {
+  color: #1455ac !important; /* Ensure the icon also changes color for active link */
+}
+
+.pic-icon,
+.update-button button {
+  background-color: #1455ac;
+}
+
+/* Add to your ProfileStyles.css file */
+
+/* Styles for the address card itself */
+.address-card .card-header {
+  background-color: #f7faff; /* Light blue background for the header */
+  border-bottom: 1px solid #eef2f7;
+  font-weight: 600;
+}
+
+/* Container for a single line of detail (e.g., "Name: Alia Bhatt") */
+.address-details-row {
+  display: flex;
+  margin-bottom: 10px; /* Spacing between rows */
+  font-size: 14px;
+}
+
+/* Styles the label part (e.g., "Name") */
+.address-details-label {
+  color: #6c757d; /* Muted text color for labels */
+  min-width: 90px; /* This ensures all the colons align perfectly */
+  flex-shrink: 0; /* Prevents the label from shrinking if the value is long */
+}
+
+/* Styles the value part (e.g., ": Alia Bhatt") */
+.address-details-value {
+  color: #212529;
+  word-break: break-word; /* Prevents long addresses from overflowing */
+}
+
+/* Style for the active navigation link in the profile sidebar */
+.customer-sidebar .nav-link.active {
+  background-color: #e7f3ff; /* A light blue background */
+  color: #0056b3; /* A darker blue text color */
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+/* Optional: Style for hover effect on non-active links */
+.customer-sidebar .nav-link:not(.active):hover {
+  background-color: #f8f9fa; /* A very light grey on hover */
+}
+
+/* Add to ProfileStyles.css */
+
+/* Custom styles for the three-dot menu */
+.no-caret::after {
+  display: none !important;
+}
+
+.dropdown-toggle {
+  padding: 0;
+}
+.dropdown-toggle:focus {
+  box-shadow: none !important;
+}
+
+/* Profile picture wrapper */
+.profile-pic-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-pic-camera-icon {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  width: 30px;
+  height: 30px;
+  background-color: #0056b3;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: 2px solid white;
+}
+
+/* Style for the update button */
+.update-button {
+  padding: 10px 25px;
+  font-weight: bold;
+}
+
+/* Ensure form controls look right */
+.form-control:disabled,
+.form-control[readonly] {
+  background-color: #e9ecef;
+  opacity: 1;
+}
+
+/* --- ProfileStyles.css Updates --- */
+
+/* Make the toggle button look interactive */
+.sidebar-toggle {
+  cursor: pointer;
+  padding: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+/* DESKTOP BEHAVIOR (min-width: 992px) */
+@media (min-width: 992px) {
+  /* Ensure the nav container is always visible on desktop */
+  .sidebar-nav-container {
+    display: block !important;
+    height: auto !important;
+  }
+
+  /* Hide the toggle button on desktop */
+  .sidebar-toggle {
+    display: none !important;
+  }
+}
+
+/* MOBILE BEHAVIOR (max-width: 991px) */
+@media (max-width: 991px) {
+  /* Allow the sidebar container to render, but adjust positioning */
+  .customer-sidebar {
+    display: block; /* CHANGED from none to block */
+    position: relative; /* Not sticky on mobile usually */
+    top: 0;
+    margin-bottom: 20px;
+    z-index: 99;
+  }
+
+  /* By default, hide the nav links on mobile */
+  .sidebar-nav-container {
+    display: none;
+    transition: all 0.3s ease-in-out;
+  }
+
+  /* When the 'show' class is added via React state, display the links */
+  .sidebar-nav-container.show {
+    display: block;
+    padding-top: 10px;
+    animation: fadeIn 0.3s;
+  }
+}
+
+/* Optional simple animation for opening */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -2,53 +2,6 @@ import React, { useContext } from "react";
 import "./FeaturedDeal.css";
 import { AppContext } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
-// import featuredProducts1 from "../Components/Assets/featured-product1.png";
-// import featuredProducts2 from "../Components/Assets/featured-product2.png";
-// import featuredProducts3 from "../Components/Assets/featured-product3.png";
-// import featuredProducts4 from "../Components/Assets/featured-product4.png";
-
-// const featuredProducts = [
-//   {
-//     id: 1,
-//     name: "Popcorn Running Shoes",
-//     originalPrice: "$200.00",
-//     discountedPrice: "$170.00",
-//     discount: "-15%",
-//     image: featuredProducts1,
-//     rating: null,
-//     reviews: null,
-//   },
-//   {
-//     id: 2,
-//     name: "Backpack For Women",
-//     originalPrice: "$60.00",
-//     discountedPrice: "$57.00",
-//     discount: "-5%",
-//     image: featuredProducts2,
-//     rating: null,
-//     reviews: null,
-//   },
-//   {
-//     id: 3,
-//     name: "TV Stands Cabinets",
-//     originalPrice: "$655.00",
-//     discountedPrice: "$640.00",
-//     discount: "-$15.00",
-//     image: featuredProducts3,
-//     rating: null,
-//     reviews: null,
-//   },
-//   {
-//     id: 4,
-//     name: "T900 Smart Watch",
-//     originalPrice: "$30.00",
-//     discountedPrice: "$28.50",
-//     discount: "-5%",
-//     image: featuredProducts4,
-//     rating: 1,
-//     reviews: "(1)",
-//   },
-// ];
 
 const FeaturedDeal = () => {
   const { flushDeals, loading, error } = useContext(AppContext); // Removed flushDeals

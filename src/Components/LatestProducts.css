@@ -23,7 +23,7 @@
 .second-banner-image {
   flex: 0 0 100%; /* Each image takes 100% of the container's width */
   width: 100%; /* Ensure it spans the full width */
-  height: 250px; /* Fixed height for consistency, adjust as needed */
+  height: 300px; /* Fixed height for consistency, adjust as needed */
   object-fit: cover; /* Cover the area, cropping if necessary */
   scroll-snap-align: start; /* Snap to the start of each image */
   border-radius: 8px; /* Added for a softer look */
@@ -229,7 +229,8 @@
   font-weight: 600;
   color: #555;
   margin-bottom: 5px;
-  flex-grow: 1; /* Allows the name to take up available space */
+  flex-grow: 1;
+  cursor: pointer;
 }
 
 .LatestProducts-productPrice {
@@ -252,11 +253,10 @@
 }
 
 .sectionWithTwoImages .section-image-two {
-  /* Target the images specifically */
   object-fit: cover; /* Use cover to fill the space, or contain based on preference */
-  width: 100%; /* Takes available space within flex container */
-  height: 200px; /* Fixed height for banners */
-  max-width: 50%; /* Each takes up to 50% */
+  width: 100%;
+  height: 300px; /* Fixed height for banners */
+  /* max-width: 50%; */
   min-width: 0; /* Allow shrinking in flex container */
   scroll-snap-align: start;
   border-radius: 8px; /* Added for a softer look */

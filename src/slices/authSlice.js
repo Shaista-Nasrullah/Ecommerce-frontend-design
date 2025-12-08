@@ -1,169 +1,163 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-// Base URL for your API
-const API_URL = "http://192.168.100.107:8000/api";
-// const API_URL = "/api";
+export const login = createAsyncThunk(
+  "auth/login",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(
+        `${API_BASE_URL}/api/login`,
+        credentials
+      );
+      return data; // This becomes the fulfilled action payload
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "Login failed. Please check your credentials.";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+// 2. REGISTER Thunk
+export const register = createAsyncThunk(
+  "auth/register",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(
+        `${API_BASE_URL}/api/register`,
+        credentials
+      );
+      return data; // This becomes the fulfilled action payload
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "Registration failed. Please try again.";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+// 3. FETCH USER Thunk
+export const fetchUser = createAsyncThunk(
+  "auth/fetchUser",
+  async (_, { getState, rejectWithValue }) => {
+    // Use underscore if the first arg isn't needed
+    const { auth } = getState();
+    const token = auth.token;
+
+    if (!token) {
+      return rejectWithValue("No token found");
+    }
+
+    try {
+      const { data } = await axios.get(`${API_BASE_URL}/api/user`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return data; // Contains user, roles etc.
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || "Failed to fetch user data.";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+// --- Auth Slice Definition ---
 
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: JSON.parse(localStorage.getItem("user")) || null, // Initialize user from localStorage
+    user: JSON.parse(localStorage.getItem("user")) || null,
     token: localStorage.getItem("token") || "",
-    roles: localStorage.getItem("roles") || null, // Initialize roles from localStorage
-    loading: false, // Added loading state
-    error: null, // Added error state
+    roles: localStorage.getItem("roles") || null,
+    loading: false,
+    error: null,
   },
   reducers: {
-    // Action to set user data
-    setUser: (state, action) => {
-      state.user = action.payload;
-      if (action.payload) {
-        localStorage.setItem("user", JSON.stringify(action.payload)); // Store user object
-        console.log(
-          "Redux: User set in state and localStorage:",
-          action.payload
-        );
-      } else {
-        localStorage.removeItem("user"); // Clear user from localStorage on null
-        console.log("Redux: User removed from state and localStorage.");
-      }
-    },
-    // Action to set authentication token
-    setToken: (state, action) => {
-      state.token = action.payload;
-      localStorage.setItem("token", action.payload);
-      console.log("Redux: Token set in state and localStorage.");
-    },
-    // Action to set user roles
-    setRole: (state, action) => {
-      state.roles = action.payload;
-      localStorage.setItem("roles", action.payload);
-      console.log("Redux: Roles set in state and localStorage.");
-    },
-    // Action to handle logout
     logout: (state) => {
       state.user = null;
       state.token = "";
       state.roles = null;
       localStorage.removeItem("token");
-      localStorage.removeItem("user"); // Clear user on logout
+      localStorage.removeItem("user");
       localStorage.removeItem("roles");
-      console.log("Redux: User logged out, state and localStorage cleared.");
     },
-    // Actions for loading and error states
-    setLoading: (state, action) => {
-      state.loading = action.payload;
-    },
-    setError: (state, action) => {
-      state.error = action.payload;
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      // Handle Login states
+      .addCase(login.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.loading = false;
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+        state.roles = action.payload.roles;
+        // Persist to localStorage
+        localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
+        localStorage.setItem("roles", action.payload.roles);
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Handle Register states
+      .addCase(register.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(register.fulfilled, (state, action) => {
+        state.loading = false;
+        state.token = action.payload.token;
+        state.user = action.payload.user;
+        state.roles = action.payload.roles || null;
+        // Persist to localStorage
+        localStorage.setItem("token", action.payload.token);
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
+        if (action.payload.roles) {
+          localStorage.setItem("roles", action.payload.roles);
+        }
+      })
+      .addCase(register.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Handle Fetch User states
+      .addCase(fetchUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user; // Assuming API returns { user: {...} }
+        state.roles = action.payload.roles || null;
+        // Persist to localStorage
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
+        if (action.payload.roles) {
+          localStorage.setItem("roles", action.payload.roles);
+        }
+      })
+      .addCase(fetchUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        // If fetch fails (e.g., invalid token), log the user out
+        state.user = null;
+        state.token = "";
+        state.roles = null;
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("roles");
+      });
   },
 });
 
-export const { setUser, setToken, setRole, logout, setLoading, setError } =
-  authSlice.actions;
-
-// Async Thunk for User Login
-export const login = (credentials) => async (dispatch) => {
-  dispatch(setLoading(true));
-  dispatch(setError(null));
-  try {
-    const { data } = await axios.post(`${API_URL}/login`, credentials);
-    console.log("Login successful, response data:", data);
-    dispatch(setToken(data.token));
-    dispatch(setRole(data.roles)); // Assuming roles are part of login response
-    dispatch(setUser(data.user)); // Assuming user data is part of login response
-  } catch (error) {
-    console.error(
-      "Login failed:",
-      error.response ? error.response.data : error.message
-    );
-    dispatch(
-      setError(error.response ? error.response.data.message : "Login failed")
-    );
-  } finally {
-    dispatch(setLoading(false));
-  }
-};
-
-// Async Thunk for User Registration
-export const register = (credentials) => async (dispatch) => {
-  dispatch(setLoading(true));
-  dispatch(setError(null));
-  try {
-    const { data } = await axios.post(`${API_URL}/register`, credentials);
-    console.log("Registration successful, response data:", data);
-    dispatch(setToken(data.token));
-    // Check if the backend returns roles on registration, if not, this might be null
-    dispatch(setRole(data.roles || null));
-    // Crucially: Dispatch the user object received from the registration response
-    dispatch(setUser(data.user));
-    return true; // Indicate success
-  } catch (error) {
-    console.error(
-      "Registration failed:",
-      error.response ? error.response.data : error.message
-    );
-    dispatch(
-      setError(
-        error.response ? error.response.data.message : "Registration failed"
-      )
-    );
-    return false; // Indicate failure
-  } finally {
-    dispatch(setLoading(false));
-  }
-};
-
-// Async Thunk to Fetch User Data
-export const fetchUser = () => async (dispatch, getState) => {
-  const token = getState().auth.token;
-  if (!token) {
-    console.log("fetchUser: No token found, skipping fetch.");
-    dispatch(setUser(null)); // Ensure user is null if no token
-    return;
-  }
-
-  // If user is already in state and localStorage, we might not need to fetch again immediately
-  // unless a refresh is explicitly needed. For simplicity, we'll fetch.
-  // const userInState = getState().auth.user;
-  // if (userInState && userInState.id) {
-  //   console.log("fetchUser: User already in state, skipping immediate fetch.");
-  //   return;
-  // }
-
-  dispatch(setLoading(true));
-  dispatch(setError(null));
-  try {
-    console.log("fetchUser: Attempting to fetch user with token:", token);
-    const { data } = await axios.get(`${API_URL}/user`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log("fetchUser: Successfully fetched user data:", data);
-    dispatch(setUser(data.user)); // Assuming the /user endpoint returns { user: {...} }
-    dispatch(setRole(data.roles || null)); // Assuming roles might be returned here too
-  } catch (error) {
-    console.error(
-      "fetchUser failed:",
-      error.response ? error.response.data : error.message
-    );
-    dispatch(
-      setError(
-        error.response ? error.response.data.message : "Failed to fetch user"
-      )
-    );
-    // If fetching user fails due to expired token or unauthorized, log out
-    if (
-      error.response &&
-      (error.response.status === 401 || error.response.status === 403)
-    ) {
-      console.log("fetchUser: Token invalid or unauthorized, logging out.");
-      dispatch(logout());
-    }
-  } finally {
-    dispatch(setLoading(false));
-  }
-};
+export const { logout } = authSlice.actions;
 
 export default authSlice.reducer;

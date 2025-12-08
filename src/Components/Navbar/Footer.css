@@ -79,11 +79,9 @@
 .newsletter-input {
   border: none;
   padding: 10px 15px;
-  /* background-color: red;
-  color: #ffffff; */
   font-size: 14px;
   outline: none;
-  flex-grow: 1; /* Allow input to take available space */
+  flex-grow: 1;
 }
 
 .newsletter-input::placeholder {
@@ -94,23 +92,22 @@
   background-color: #ffffff;
   color: #1e3a53;
   padding: 10px 20px;
-  margin: 4px; /* Adjust margin to create space inside the bordered group */
-  border: none; /* Button inside input group shouldn't have its own border */
+  margin: 4px;
+  border: none;
   border-radius: 7px;
   font-size: 14px;
-  font-weight: 600; /* semibold */
+  font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .newsletter-button:hover {
   background-color: #f0f0f0;
-  color: #1e3a53; /* Ensure text color remains dark on hover */
+  color: #1e3a53;
 }
 
 /* Footer Bottom Section */
 .footer-bottom {
-  /* Using Bootstrap's Container, Row, Col for layout */
   border-top: 1px solid rgba(255, 255, 255, 0.2); /* Separator line */
   margin-top: 2rem;
 }

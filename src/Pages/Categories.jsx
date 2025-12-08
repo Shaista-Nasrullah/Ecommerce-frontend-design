@@ -8,17 +8,12 @@ const AllCategoriesPage = () => {
   const navigate = useNavigate();
   const [pageLoading, setPageLoading] = useState(true);
   const [pageError, setPageError] = useState(null);
-
-  // Destructure allCategories (from global state) and the fetch function (memoized)
-  // Changed `categories` to `allCategories` and `fetchCategoriesData` to `fetchAllCategoriesData`
   const { allCategories, fetchAllCategoriesData, IMAGE_BASE_URL } =
     useContext(AppContext);
 
   useEffect(() => {
-    // When this component mounts, fetch all categories specifically for this page
-    // This will now only run once because fetchAllCategoriesData is memoized
     fetchAllCategoriesData(setPageLoading, setPageError);
-  }, [fetchAllCategoriesData]); // Dependency array: now stable, runs once on mount
+  }, [fetchAllCategoriesData]); 
 
   if (pageLoading) {
     return (

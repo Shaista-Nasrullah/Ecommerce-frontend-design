@@ -47,7 +47,7 @@ const SubCategories = () => {
 
   const handleSubCategoryClick = (subCategoryId) => {
     console.log(`Clicked subcategory ID: ${subCategoryId}`);
-    navigate(`/products?subCategoryId=${subCategoryId}`);
+    navigate(`/shop?category_id=${id}&sub_category_id=${subCategoryId}`);
   };
 
   const filteredSubCategories = subCategories.filter((subCategory) =>

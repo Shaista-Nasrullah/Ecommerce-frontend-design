@@ -24,17 +24,31 @@ const MyCart = () => {
   // You might need to adjust tax/shipping based on your actual business logic
   const taxRate = 0.15; // 15% tax example
   const shippingCost = 0; // Example, could be dynamic
-  const subTotal = totalAmount;
-  const tax = subTotal * taxRate;
-  const totalWithTax = subTotal + tax + shippingCost;
+
+  // Calculate total tax and discount from cart items
+  const totalCartTax = cartItems.reduce(
+    (sum, item) => sum + (item.item_tax || 0),
+    0
+  );
+  const totalCartDiscount = cartItems.reduce(
+    (sum, item) => sum + (item.discount_amount || 0),
+    0
+  );
+
+  const subTotal = totalAmount; // totalAmount already sums up item.totalPrice
+  const tax = subTotal * taxRate; // This is a general cart-level tax, might conflict with item.item_tax
+  // If `item.item_tax` represents the tax *per item*, and `totalCartTax` is the sum,
+  // then your `tax` calculation here might be redundant or need adjustment based on business rules.
+  // For now, I'll keep your original `tax` calculation using `taxRate`.
+  // If `item.item_tax` should be the *only* tax, you'd use `totalCartTax` here.
+
+  const totalWithTax = subTotal + tax + shippingCost; // Using the general tax calculation
 
   const handleRemoveOneFromCart = (productId) => {
-    // Dispatch the specific action to decrement quantity or remove if quantity is 1
     dispatch(decrementItemQuantity(productId));
   };
 
   const handleAddOneToCart = (productId) => {
-    // Dispatch the specific action to increment quantity
     dispatch(incrementItemQuantity(productId));
   };
 
@@ -63,17 +77,13 @@ const MyCart = () => {
           ) : (
             cartItems.map((item) => (
               <div key={item.id} className="shop-section">
-                {/* Simplified shop-section header for individual items if not grouping by actual shop */}
-                {/* You might adjust this if you have actual 'categories' or 'shops' associated with cart items */}
                 <div className="shop-title">
-                  <input type="checkbox" checked readOnly />
-                  <span>Product Category (Placeholder)</span>{" "}
-                  {/* Placeholder, adjust if you have category data in your cart item */}
+                  <span>Product Category: {item?.category || "N/A"}</span>{" "}
+                  {/* Display actual category */}
                   <FiAlertCircle className="alert-icon" />
                 </div>
                 <div className="cart-item-card">
                   <div className="item-details">
-                    <input type="checkbox" checked readOnly />
                     <img
                       src={item.image}
                       alt={item.name}
@@ -81,7 +91,35 @@ const MyCart = () => {
                     />
                     <div className="item-info">
                       <p className="item-name">{item.name}</p>
-                      {/* <p className="item-variant">Variant : White</p> If your product object has variant data */}
+                      {/* You can add more details here */}
+                      {item.variation_id && (
+                        <p className="item-variant">
+                          Variation ID: {item.variation_id}
+                        </p>
+                      )}
+                      {item.product_id && (
+                        <p className="item-product-id">
+                          Product ID: {item.product_id}
+                        </p>
+                      )}
+                      {item.item_tax > 0 && (
+                        <p className="item-tax">
+                          Item Tax: PKR{" "}
+                          {item.item_tax.toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </p>
+                      )}
+                      {item.discount_amount > 0 && (
+                        <p className="item-discount">
+                          Discount: -PKR{" "}
+                          {item.discount_amount.toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div className="item-price-quantity-total">
@@ -113,7 +151,6 @@ const MyCart = () => {
                 <div className="delivery-info">
                   <FaTruck className="delivery-icon" />
                   <span>Free Delivery</span>{" "}
-                  {/* This needs to be dynamic based on your logic */}
                   <span className="free-delivery-text">
                     Add more for free delivery
                   </span>
@@ -147,7 +184,14 @@ const MyCart = () => {
             </div>
             <div className="summary-row">
               <span>Discount on product</span>
-              <span>- PKR 0.00</span> {/* Implement discount logic if needed */}
+              <span>
+                - PKR{" "}
+                {totalCartDiscount.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </span>{" "}
+              {/* Display total cart discount */}
             </div>
             <div className="summary-row">
               <span>Tax ({taxRate * 100}%)</span>
@@ -170,18 +214,11 @@ const MyCart = () => {
               </span>
             </div>
           </div>
-          {/* <div className="action-item cart">
-            <Link to="/cart">
-              {" "}
-              <i className="fa fa-shopping-cart"></i>
-              <span className="badge">0</span>{" "}
-            </Link>
-          </div> */}
 
           <button className="proceed-to-checkout-btn">
             <Link to="/checkout">Proceed to Checkout</Link>
           </button>
-          {cartItems.length > 0 && ( // Show clear cart button only if items exist
+          {cartItems.length > 0 && (
             <button
               className="proceed-to-checkout-btn mt-2"
               onClick={handleClearCart}

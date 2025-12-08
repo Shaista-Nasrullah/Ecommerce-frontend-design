@@ -1,70 +1,78 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Container, Row, Col, Button, Card } from "react-bootstrap";
-import "./NewComponent.css";
+import React, { useContext } from "react";
+import { Button } from "react-bootstrap";
+import "./NewComponent.css"; // New CSS file for this component
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 
 const ProductDisplay = () => {
-  const { featured, loading, error } = useContext(AppContext); // Removed flushDeals
+  const { featured, loading, error } = useContext(AppContext);
 
   const navigate = useNavigate();
+
   const handleProductClick = (productId) => {
     navigate(`/product/${productId}`);
   };
 
+  const handleViewAllClick = () => {
+    navigate("/shop?section=featured-products"); // Navigate to a specific section for featured products
+  };
+
   if (loading) {
-    return <div className="brands-section-container">Loading brands...</div>;
+    return (
+      <div className="product-showcase-message">
+        Loading featured products...
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div className="brands-section-container">
-        Error loading brands: {error.message}
+      <div className="product-showcase-message product-showcase-error">
+        Error loading featured products: {error.message}
         <p>Please check your network connection and API endpoint.</p>
       </div>
     );
   }
 
   if (featured.length === 0) {
-    // Modified condition
-    return <div className="brands-section-container">No products found.</div>;
+    return (
+      <div className="product-showcase-message">
+        No featured products found.
+      </div>
+    );
   }
 
-  // Removed Handler for "View All" Flash Deals
-
-  // NEW: Handler for "View All" Featured Products
-  const handleViewAllFeaturedProducts = () => {
-    navigate("/shop?section=featured-products");
-  };
-
   return (
-    <div className="my-4 product-display-container">
-      <div className="product-display-section-title mt-5">
-        <p>Featured products</p>
+    <div className="product-showcase-wrapper my-4">
+      <div className="product-showcase-header mt-5">
+        <p className="product-showcase-title">Featured Products</p>
         <Button
           variant="link"
-          className="product-display-view-all-button"
-          onClick={handleViewAllFeaturedProducts}
+          className="product-showcase-view-all-button"
+          onClick={handleViewAllClick}
         >
           View All
         </Button>
       </div>
 
-      <div className="product-display-featured-products-scroll-container">
-        <div className="product-display-featured-products-scroll-content">
+      <div className="product-showcase-scroll-container">
+        <div className="product-showcase-grid">
           {featured.map((product) => (
             <div
               key={product.id}
-              className="product-display-product-card-row2"
+              className="product-showcase-card"
               onClick={() => handleProductClick(product.id)}
             >
-              <div className="product-display-product-image-wrapper">
-                <img src={product.feature_image} alt={product.name} />
+              <div className="product-showcase-image-wrapper">
+                <img
+                  src={product.feature_image}
+                  alt={product.name}
+                  className="product-showcase-image"
+                />
               </div>
-              <div className="product-display-product-info">
-                <p>{product.name}</p>
-                <p>
-                  {" "}
+              <div className="product-showcase-info">
+                <p className="product-showcase-name">{product.name}</p>
+                <p className="product-showcase-price">
                   {product.variations && product.variations.length > 0
                     ? `PKR ${parseFloat(
                         product.variations[0].default_sell_price

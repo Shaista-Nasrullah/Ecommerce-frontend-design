@@ -1,0 +1,109 @@
+/* src/Components/CategorySidebar/CategorySidebar.css */
+
+/* This is the container for the entire menu system */
+.category-megamenu-container {
+  position: absolute;
+  top: 0px;
+  left: 160px;
+  z-index: 2000;
+  display: flex; /* Use flexbox to align sidebar and sub-category panel */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #eee;
+}
+
+.category-megamenu-container.homepage {
+  left: 0px;
+}
+
+/* The main category list on the left */
+.sidebar-container {
+  width: 280px; /* Width of the main category list */
+  background-color: #fff;
+  height: 402px; /* Fixed height for the container */
+  overflow-y: auto; /* Allow scrolling for the main categories if they overflow */
+}
+
+.category-link-with-icon:hover,
+.category-link-with-icon.active {
+  background-color: #f0f0f0; /* Highlight active category */
+}
+
+.category-name {
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.sub-category-panel {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  width: 920px;
+  height: 402px;
+  background: white;
+  border-left: 1px solid #ddd;
+  padding: 1.5rem;
+  overflow-y: auto;
+
+  /* ADDED: This ensures the popup isn't "flat" against the background */
+  z-index: 2001;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+}
+
+/* This will be the grid/flex container for the columns of links */
+.sub-category-columns {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  max-height: 400px; /* Allow columns to wrap */
+  gap: 1rem 2rem; /* Row and column gap */
+}
+
+/* Styling for each sub-category group (e.g., "Women's bag") */
+.sub-category-group {
+  margin-bottom: 1.5rem;
+}
+
+.sub-category-group h5 {
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+}
+.sub-category-group h5:hover {
+  color: #1455ac;
+}
+
+/* ... existing css ... */
+
+/* REPLACE the previous .nav-link styles with this */
+.custom-sub-link {
+  padding: 6px 0;
+  color: #555;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+
+  /* Vital for Z-Index clicking */
+  position: relative;
+  z-index: 2005;
+}
+
+.custom-sub-link:hover {
+  color: #007bff;
+  text-decoration: underline;
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.02
+  ); /* Slight background on hover to see area */
+}
+
+/* Ensure the panel bridges the gap */
+.sub-category-panel {
+  /* existing styles... */
+
+  /* Move it slightly left (-1px) to overlap the sidebar border 
+     so the mouse doesn't "fall" into the gap */
+  left: calc(100% - 1px);
+}

@@ -1,0 +1,74 @@
+/* Wishlist.css */
+
+.wishlist-container {
+  background-color: #fff;
+  border: 1px solid rgba(76, 144, 236, 0.15);
+  box-shadow: 0px 4px 5px rgba(20, 85, 172, 0.05);
+  border-radius: 0.25rem;
+  height: 483px;
+  overflow-y: auto;
+}
+
+.wishlist-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.1rem;
+  border: 1px solid #f0f0f0;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+/* Remove border from the last item */
+.wishlist-item:last-child {
+  border-bottom: none;
+}
+
+.wishlist-item-content {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.wishlist-item-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 0.25rem;
+}
+
+.wishlist-item-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.wishlist-item-details .item-name {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.wishlist-item-details .item-brand {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-bottom: 0.25rem;
+}
+
+.wishlist-item-details .item-brand span {
+  color: #007bff; /* Or your theme's primary color */
+  font-weight: 500;
+}
+
+.wishlist-item-details .item-price {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 0;
+}
+
+.wishlist-item-action i {
+  font-size: 1.5rem; /* Makes the heart icon larger */
+  transition: color 0.2s ease-in-out;
+}
+
+.wishlist-item-action i:hover {
+  color: #dc3545; /* Changes to red on hover */
+}

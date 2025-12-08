@@ -255,6 +255,9 @@
   font-size: 15px;
   /* No width specified here, it will take natural width */
 }
+.category-name-pages:hover {
+  color: #1455ac;
+}
 
 .icons {
   /* No need for background-color: pink; unless for debugging */
@@ -326,6 +329,11 @@
 
 .brand-name-pages {
   color: #373f50;
+  cursor: pointer;
+}
+
+.brand-name-pages:hover {
+  color: #1455ac;
 }
 .brands-items {
   /* background-color: red; */
@@ -361,6 +369,144 @@
 .brands-list-scrollable {
   scrollbar-width: thin; /* "auto" or "none" */
   scrollbar-color: #888 #f1f1f1; /* thumb color track color */
+}
+
+/* --- Price Filter UI --- */
+.price-inputs-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.price-input-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.custom-price-input {
+  width: 70px;
+  padding: 6px 5px;
+  border: 1px solid transparent;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 13px;
+  color: #333;
+  outline: none;
+}
+
+.custom-price-input:focus {
+  background-color: #fff;
+  border-color: #1455ac;
+}
+
+.price-separator {
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #777;
+}
+
+.price-apply-btn {
+  width: 36px;
+  height: 34px;
+  background-color: #1455ac;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+}
+
+.price-apply-btn:hover {
+  background-color: #0d3c7a;
+}
+
+/* --- Custom Double Slider CSS --- */
+.range-slider-container {
+  position: relative;
+  width: 100%;
+  height: 30px; /* Container height */
+}
+
+/* The Visual Track (Background Grey) */
+.slider {
+  position: relative;
+  width: 100%;
+}
+
+.slider__track,
+.slider__range {
+  position: absolute;
+  border-radius: 3px;
+  height: 5px;
+  top: 8px; /* Align vertically */
+}
+
+.slider__track {
+  background-color: #ced4da;
+  width: 100%;
+  z-index: 1;
+}
+
+/* The Active Range (Blue) */
+.slider__range {
+  background-color: #1455ac;
+  z-index: 2;
+}
+
+/* The Invisible Inputs on Top */
+.thumb,
+.thumb::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.thumb {
+  pointer-events: none; /* Let clicks pass through to track if not on handle */
+  position: absolute;
+  height: 0;
+  width: 100%; /* Full width */
+  outline: none;
+  z-index: 3;
+  top: 8px; /* Match track top */
+}
+
+/* The Handles (Circles) */
+.thumb::-webkit-slider-thumb {
+  background-color: #1455ac;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
+  margin-top: 2px; /* Center vertically */
+  pointer-events: all; /* Re-enable events for the handle itself */
+  position: relative;
+}
+
+/* Firefox Support */
+.thumb::-moz-range-thumb {
+  background-color: #1455ac;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
+  pointer-events: all;
+  position: relative;
 }
 
 @media (max-width: 991px) {

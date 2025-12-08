@@ -1,15 +1,12 @@
-/* You might want to use a CSS reset or normalize.css */
+/* src/Components/Header/Header.css */
 
-/* You might want to use a CSS reset or normalize.css */
+/* --- Existing Styles (keep them as is or with minor adjustments) --- */
 
 .navbar-container {
-  background-color: #fff; /* White background for the top part */
+  background-color: #fff;
   font-family: poppins, sans-serif;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 100%;
-  /* REMOVE any padding-top here that might have been added to prevent overlap */
-  /* If you add padding to the body or main content, ensure it matches the header height */
-  /* position: relative; Remove this if it was here, not needed for the container with a fixed child */
 }
 
 .navbar-top {
@@ -17,30 +14,30 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 175px;
-  max-width: 1553px; /* Adjust as needed */
+  max-width: 1553px;
   margin: 0 auto;
   height: 70px;
   box-shadow: 0.5px 0px 5px #393737;
-
-  /* --- IMPORTANT CHANGES FOR FIXED POSITIONING --- */
-  position: fixed; /* Makes the element fixed relative to the viewport */
-  top: 0; /* Positions it at the top edge of the viewport */
-  left: 0; /* Positions it at the left edge of the viewport */
-  width: 100%; /* Makes it span the full width of the viewport */
-  background-color: #fff; /* Ensure background is set, as it will float above content */
-  z-index: 1000; /* Keeps it on top of other content */
-  box-sizing: border-box; /* Include padding in the element's total width and height */
-  /* --- END IMPORTANT CHANGES --- */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  z-index: 1000;
+  box-sizing: border-box;
 }
 
-/* Add a new rule for a div that pushes down content */
 .navbar-spacer {
-  height: 70px; /* Adjust this value to match the exact height of your .navbar-top */
-  /* You might need to inspect the rendered height in your browser's dev tools */
-  /* This prevents content from hiding under the fixed header */
+  height: 70px;
 }
 
-/* ... rest of your existing CSS ... */
+.brand-link-wrapper {
+  text-decoration: none;
+}
+
+.brand-link-wrapper:hover {
+  text-decoration: none;
+}
 
 .brand-logo {
   display: flex;
@@ -53,75 +50,62 @@
 }
 
 .brand-name {
-  text-decoration: none;
   font-size: 1.5rem;
   font-weight: bold;
-  color: #1a4f91; /* Dark blue color */
+  color: #1a4f91;
   margin: 0;
 }
 
-.logo img {
-  height: 40px; /* Adjust logo size */
+.brand-logo img {
+  height: 40px;
 }
-
-/* Header.css */
-
-/* Header.css */
-
-/* ... existing styles ... */
 
 .user-display-name {
-  font-weight: bold;
-  color: #333; /* Adjust color as needed */
-  padding: 0 5px; /* Add some padding around the name */
-  white-space: nowrap; /* Prevent name from wrapping */
-  max-width: 100px; /* Limit width if names can be very long */
-  overflow: hidden; /* Hide overflow if max-width is hit */
-  text-overflow: ellipsis; /* Add ellipsis for overflow */
+  font-weight: normal;
+  color: #333;
+  padding: 0 5px;
+  white-space: nowrap;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   display: flex;
-  align-items: center; /* Vertically align text */
-  height: 100%; /* Ensure it takes full height of its parent for alignment */
+  align-items: center;
+  height: 100%;
 }
 
-/* Adjustments for the user-icon-wrapper if needed */
+.user-icon-logged-in {
+  display: none;
+}
+
 .user-actions .action-item.user-icon-wrapper {
   display: flex;
-  align-items: center; /* Vertically align content inside */
+  align-items: center;
   justify-content: center;
-  min-width: 50px; /* Give it a minimum width to accommodate names */
-}
-
-/* You might want to remove the badge if it was next to the user icon */
-.action-item .badge {
-  /* Ensure badge styling doesn't interfere or hide it if it's no longer needed for the user icon */
-  /* For example, if you only want badges on cart/heart: */
-  /*
-  .user-icon-wrapper .badge {
-    display: none;
-  }
-  */
+  min-width: 50px;
 }
 
 .user-dropdown-menu {
   position: absolute;
-  top: 100%; /* Position it directly below the user icon */
-  right: 0; /* Align to the right of the user icon wrapper */
+  top: 100%;
+  right: 0;
   background-color: white;
   border: 1px solid #ddd;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 100; /* Ensure it appears above other content */
-  min-width: 160px; /* Adjust as needed */
+  z-index: 100;
+  min-width: 160px;
   border-radius: 5px;
-  overflow: hidden; /* Ensures rounded corners */
+  overflow: hidden;
+  padding: 5px 0;
+  margin-top: 10px;
 }
 
 .user-dropdown-menu .dropdown-item {
   padding: 12px 16px;
   text-decoration: none;
-  display: flex; /* For icon and text alignment */
+  display: flex;
   align-items: center;
   color: #333;
-  cursor: pointer; /* Indicate it's clickable */
+  cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
@@ -131,17 +115,7 @@
 
 .user-dropdown-menu .dropdown-item i {
   margin-right: 10px;
-  color: #555; /* Icon color */
-}
-
-.user-dropdown-menu .user-greeting {
-  font-weight: bold;
-  color: #007bff; /* A distinct color for the greeting */
-  border-bottom: 1px solid #eee; /* Separator */
-  padding-bottom: 8px;
-  margin-bottom: 8px;
-  background-color: #f9f9f9; /* Slightly different background */
-  cursor: default; /* Not clickable like other items */
+  color: #555;
 }
 
 .search-bar {
@@ -151,11 +125,11 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   overflow: hidden;
-  max-width: 600px; /* Adjust search bar width */
+  max-width: 600px;
 }
 
 .search-icon {
-  display: none; /* Hidden by default, shown in media query */
+  display: none;
   cursor: pointer;
 }
 
@@ -203,8 +177,7 @@
 .action-item .badge {
   position: absolute;
   top: -8px;
-  /* right: -11px; */
-  background-color: #f58300; /* Red badge */
+  background-color: #f58300;
   color: white;
   border-radius: 50%;
   padding: 2px 6px;
@@ -223,29 +196,17 @@
   align-items: center;
 }
 
-.action-item.cart .cart-info {
-  display: flex;
-  flex-direction: column;
-  margin-left: 5px;
-  font-size: 14px;
-}
-
-.action-item.cart .price {
-  font-weight: bold;
-}
-
 .navbar-bottom-container {
-  background-color: #1a4f91;
+  background-color: #1455ac;
   width: 100%;
 }
 
 .navbar-bottom {
-  /* Dark blue background */
   color: white;
   display: flex;
   align-items: center;
-  padding: 10px 2px;
-  max-width: 1200px; /* Adjust as needed */
+  padding: 5px 2px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -258,7 +219,7 @@
   align-items: center;
   cursor: pointer;
   margin-right: 20px;
-  min-width: 200px; /* Adjust width */
+  min-width: 260px;
   justify-content: space-between;
 }
 
@@ -303,7 +264,10 @@
 }
 
 .menu {
-  display: none;
+  display: none; /* Hidden by default, shown in media query */
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
 }
 
 /* Search Overlay Styles */
@@ -312,97 +276,203 @@
   top: 0;
   left: 0;
   width: 100%;
-  /* Use a viewport height unit or adjust based on desired visual impact */
-  height: 10vh; /* 10% of the viewport height */
+  height: 10vh;
   background-color: rgba(233, 243, 255, 1);
   display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically for the content */
+  justify-content: center;
+  align-items: center;
   z-index: 1000;
   box-sizing: border-box;
-  padding: 0 1rem; /* Add some padding on the sides for smaller screens */
+  padding: 0 1rem;
 }
 
 .search-overlay-content {
-  display: flex; /* Use flex to arrange input and button */
+  display: flex;
   align-items: center;
-  width: 100%; /* Take full width of its parent (which has padding) */
-  /* max-width: 800px;  */
-  gap: 1rem; /* Space between input and button using gap property */
+  width: 100%;
+  gap: 1rem;
 }
 
 .search-overlay-content input {
-  flex-grow: 1; /* Allow input to take up available space */
+  flex-grow: 1;
   border: 1px solid #ddd;
-  padding: 0.8rem 1rem; /* Use rem units for padding */
-  border-radius: 0.3rem; /* Use rem units for border-radius */
+  padding: 0.8rem 1rem;
+  border-radius: 0.3rem;
   outline: none;
-  font-size: 1rem; /* Base font size, scales with root em */
-  height: 2.5rem; /* Fixed height for the input */
+  font-size: 1rem;
+  height: 2.5rem;
   box-sizing: border-box;
-  min-width: 0; /* Allows input to shrink smaller than its content if needed */
+  min-width: 0;
 }
 
 .search-overlay-cancel-button {
   background: none;
   border: none;
   color: #666;
-  font-size: 1rem; /* Use rem units for font size */
+  font-size: 1rem;
   cursor: pointer;
-  padding: 0.5rem 1rem; /* Add some padding for clickability */
-  white-space: nowrap; /* Prevent "Cancel" from wrapping */
-  flex-shrink: 0; /* Prevent the button from shrinking */
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .search-overlay-cancel-button:hover {
   color: #333;
 }
 
-/* ... existing CSS ... */
-
-.user-icon-wrapper {
-  position: relative; /* Essential for positioning the dropdown */
-  /* Keep existing .action-item styles */
-}
-
-.user-dropdown-menu {
-  position: absolute;
-  top: 100%; /* Position right below the user icon */
-  right: 0; /* Align to the right of the user icon wrapper */
+/* --- NEW MOBILE MENU SIDEBAR STYLES --- */
+.mobile-menu-sidebar {
+  position: fixed;
+  top: 0;
+  left: -300px; /* Hidden by default */
+  width: 300px; /* Width of the sidebar */
+  height: 100vh;
   background-color: #fff;
-  border: 1px solid #ddd;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  min-width: 150px; /* Adjust width as needed */
-  z-index: 1001; /* Ensure it's above other elements */
-  padding: 5px 0;
-  margin-top: 10px; /* Space between icon and dropdown */
+  z-index: 1002; /* Higher than search overlay */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  transition: left 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* Enable scrolling for long content */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
-.user-dropdown-menu .dropdown-item {
+.mobile-menu-sidebar.open {
+  left: 0; /* Slide in */
+}
+
+.mobile-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+  background-color: #f8f8f8;
+}
+
+.mobile-menu-phone {
+  font-size: 1rem;
+  color: #555;
   display: flex;
   align-items: center;
-  padding: 10px 15px;
+  gap: 5px;
+}
+.mobile-menu-phone i {
+  color: #1a4f91; /* Icon color */
+  font-size: 1.1rem;
+}
+
+.mobile-menu-close {
+  font-size: 1.5rem;
   cursor: pointer;
   color: #333;
-  text-decoration: none; /* In case you make it an <a> later */
+  padding: 5px; /* Increase clickable area */
+}
+
+.mobile-menu-content {
+  padding: 10px 0;
+  flex-grow: 1; /* Allows content to take up available space */
+}
+
+.mobile-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #333;
+  font-size: 1rem;
+  border-bottom: 1px solid #eee;
   transition: background-color 0.2s ease;
 }
 
-.user-dropdown-menu .dropdown-item:hover {
-  background-color: #f5f5f5;
+.mobile-menu-item:hover {
+  background-color: #f1f1f1;
 }
 
-.user-dropdown-menu .dropdown-item i {
-  font-size: 16px; /* Adjust icon size */
-  margin-right: 10px;
-  color: #007bff; /* Icon color, adjust as desired */
-  opacity: 1; /* Override parent opacity if any */
-}
-
-.user-dropdown-menu .dropdown-item span {
-  font-size: 14px;
+.mobile-menu-item.sign-item {
+  font-size: 0.95rem;
   font-weight: 500;
+}
+.mobile-menu-item.sign-item i {
+  margin-right: 10px;
+  color: #1a4f91;
+  font-size: 1.2rem;
+}
+
+.mobile-menu-category-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #1a4f91; /* Highlight category section */
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  background-color: #f5f5f5;
+  margin-top: 5px;
+}
+
+.mobile-menu-category-toggle i {
+  font-size: 0.8rem;
+}
+
+.mobile-menu-categories {
+  padding: 0;
+  background-color: #fff; /* White background for categories */
+}
+
+.mobile-category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #555;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-category-item:last-of-type {
+  border-bottom: none; /* No border for the last item in visible list */
+}
+
+.mobile-category-item i:first-child {
+  margin-right: 10px;
+  color: #777; /* Icon color for categories */
+  width: 20px; /* Align icons */
+  text-align: center;
+}
+
+.mobile-category-item i:last-child {
+  color: #bbb; /* Chevron icon color */
+  font-size: 0.8rem;
+}
+
+.mobile-category-item:hover {
+  background-color: #f9f9f9;
+}
+
+.mobile-category-item.view-more {
+  font-weight: bold;
+  color: #1a4f91;
+  justify-content: center;
+  cursor: pointer;
+  background-color: #f5f5f5;
+  padding: 10px 20px;
+  border-bottom: 1px solid #eee; /* Add bottom border */
+}
+.mobile-category-item.view-more:hover {
+  background-color: #e0e0e0;
+}
+
+/* --- MEDIA QUERIES --- */
+
+@media (max-width: 1300px) {
+  .navbar-top {
+    padding: 10px;
+  }
 }
 
 @media (min-width: 991px) {
@@ -412,6 +482,9 @@
   .search-overlay {
     display: none;
   }
+  .mobile-menu-sidebar {
+    display: none; /* Hide mobile sidebar on desktop */
+  }
 }
 
 @media (max-width: 990px) {
@@ -419,25 +492,69 @@
     padding: 10px 20px;
   }
   .search-bar {
-    display: none;
+    display: none; /* Hide desktop search bar */
   }
   .search-icon {
-    display: block;
+    display: block; /* Show search icon */
+  }
+  .action-item {
+    margin-left: 15px; /* Reduce spacing between action items */
+  }
+  .cart-total-amount {
+    display: none; /* Hide total amount on smaller screens */
   }
 }
 
 @media (max-width: 768px) {
+  .user-display-name {
+    display: none; /* Hide user name and dashboard text */
+  }
+
+  .user-icon-logged-in {
+    display: block; /* Show the user icon when logged in on small screens */
+    /* Ensure it has similar styling to other icons if needed */
+    font-size: 20px; /* Adjust size as needed */
+    color: rgb(39, 39, 86);
+    opacity: 0.4; /* Match existing icon opacity if desired, or set to 1 */
+    margin-right: 0; /* Remove any default margins if they interfere */
+  }
+
+  /* Make sure the main .fa-user is styled correctly if it's the only one shown when not logged in */
+  .action-item i {
+    opacity: 1; /* Make icons fully visible on mobile */
+  }
+  .action-item.user-icon-wrapper i {
+    font-size: 22px; /* Slightly larger user icon */
+  }
   .navbar-bottom-container {
     display: none;
   }
   .menu {
-    display: block;
+    display: block; /* Show hamburger menu icon */
+  }
+  .brand-logo {
+    margin-left: 15px; /* Adjust logo position */
+  }
+  .user-actions {
+    margin-left: auto; /* Push actions to the right */
+  }
+  .user-display-name {
+    display: none; /* Hide user name, show only icon */
+  }
+  .action-item.user-icon-wrapper {
+    min-width: unset; /* Remove min-width if name is hidden */
+  }
+  .action-item i {
+    opacity: 1; /* Make icons fully visible on mobile */
+  }
+  .action-item.user-icon-wrapper i {
+    font-size: 22px; /* Slightly larger user icon */
   }
 }
 
 @media (max-width: 600px) {
   .navbar-top {
-    padding: 10px 20px;
+    padding: 10px 15px; /* Further reduce padding */
   }
   .search-overlay {
     height: 12vh;
@@ -448,7 +565,7 @@
     font-size: 0.9rem;
     height: 2.2rem;
     padding: 0.6rem 0.8rem;
-    width: 200px;
+    width: 200px; /* Give it a default width */
   }
 
   .search-overlay-cancel-button {
@@ -456,18 +573,39 @@
     padding: 0.4rem 0.8rem;
   }
   .brand-name {
-    display: none;
+    display: none; /* Hide brand name */
+  }
+  .action-item {
+    margin-left: 10px; /* Smaller spacing */
+  }
+  .mobile-menu-sidebar {
+    width: 280px; /* Slightly smaller sidebar for very small screens */
   }
 }
 
 @media (max-width: 380px) {
+  .navbar-top {
+    padding: 10px 10px;
+  }
   .search-overlay-content {
     gap: 0.5rem;
   }
   .search-overlay-content input {
-    width: 100px;
+    width: 100px; /* Allow input to shrink further */
   }
   .search-overlay-cancel-button {
     padding: 0.3rem 0.6rem;
+  }
+  .mobile-menu-sidebar {
+    width: 260px; /* Even smaller sidebar for tiny screens */
+  }
+  .mobile-menu-header {
+    padding: 10px 15px;
+  }
+  .mobile-menu-item,
+  .mobile-menu-category-toggle,
+  .mobile-category-item {
+    padding: 10px 15px;
+    font-size: 0.9rem;
   }
 }

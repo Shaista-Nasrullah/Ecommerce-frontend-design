@@ -127,6 +127,7 @@
   color: #1c1b1b;
   margin: 0 0 5px 0;
   line-height: 1.3;
+  cursor: pointer;
 }
 
 .product-rating {
@@ -181,7 +182,8 @@
 
   .best-Seller-section,
   .top-Rated-section {
-    width: calc(50% - 10px); /* Two columns with gap */
+    width: max-content;
+    margin: auto;
   }
   /* For screens 768px and wider, display 2 products per row within the products-grid */
   .products-grid {

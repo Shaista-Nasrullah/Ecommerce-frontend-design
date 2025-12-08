@@ -266,6 +266,10 @@
   /* Adjusted margin-top to account for removed guarantee section */
   margin-top: 20px;
 }
+.proceed-to-checkout-btn a {
+  color: white;
+  text-decoration: none;
+}
 
 .proceed-to-checkout-btn:hover {
   background-color: #0056b3;

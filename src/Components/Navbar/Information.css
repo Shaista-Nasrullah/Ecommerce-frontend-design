@@ -26,6 +26,15 @@
   color: #262d34;
   margin-bottom: 0px;
 }
+.each-section-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.each-section-link:hover {
+  text-decoration: none;
+  color: inherit;
+}
 
 .each-section h4 {
   color: #262d34cc;

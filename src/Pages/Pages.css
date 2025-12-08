@@ -1,0 +1,77 @@
+/* General styles for the refund policy page container */
+.page-container {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  color: #333;
+  background-color: #f9f9f9; /* A light background for the whole page */
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px 0px;
+}
+
+/* Styles for the top banner */
+.banner {
+  height: 150px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+  position: relative; /* Needed for the overlay */
+  border-radius: 8px;
+}
+
+/* Adds a dark overlay to the banner to make the text more readable */
+.banner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+}
+
+/* Styles for the title text in the banner */
+.banner-title {
+  font-size: 2rem;
+  font-weight: semibold;
+  position: relative; /* Ensures title is on top of the overlay */
+  z-index: 1;
+}
+
+/* Styles for the main content area */
+.content-container {
+  /* width: fit-content; */
+  margin-top: 10px;
+  background-color: white;
+  padding: 20px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 2;
+}
+
+/* --- Styles for the HTML content injected from the API --- */
+
+/* Styles for paragraphs within the fetched content */
+.content-html p {
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  color: #555;
+  font-size: 1rem;
+}
+
+/* Styles for headings (h2) within the fetched content */
+.content-html h2 {
+  font-size: 1.75rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0.5rem;
+}

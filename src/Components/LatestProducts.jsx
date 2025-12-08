@@ -4,7 +4,7 @@ import "./LatestProducts.css";
 import { AppContext } from "../context/AppContext";
 import sectionImageOne from "../Components/Assets/sectionWithTwoImages1.png";
 import sectionImageTwo from "../Components/Assets/sectionWithTwoImages2.png";
-import dealOfTheMonthImage from "../Components/Assets/DealOfTheDay.png";
+// import dealOfTheMonthImage from "../Components/Assets/DealOfTheDay.png";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
@@ -44,29 +44,19 @@ const LatestProducts = () => {
     );
   }
 
-  // NEW: Handler for "View All" Latest Products
   const handleViewAllLatestProducts = () => {
     navigate("/shop?section=latest-products");
-  };
-
-  // Deal of the Month data (static for now)
-  const dealProduct = {
-    name: "Exquisite 18K White Gold Diamond Necklace Set",
-    originalPrice: "$2,400.00",
-    dealPrice: "$1,680.00",
-    discount: "-30%",
-    image: dealOfTheMonthImage, // Use the imported deal image
   };
 
   return (
     <section className="LatestProducts-section">
       {/* New section for horizontally scrollable secondBanner images */}
-      {secondBanner.length > 0 && (
+      {secondBanner.length > 0 && secondBanner[0] && (
         <div className="second-banner-scroll-container">
           {secondBanner.map((banner, index) => (
             <img
               key={index}
-              src={banner.image} // Assuming 'image' holds the URL for banners
+              src={banner.image}
               alt={`Banner ${index + 1}`}
               className="second-banner-image"
             />
@@ -75,30 +65,6 @@ const LatestProducts = () => {
       )}
 
       <div className="containerOfDeal">
-        {/* Deal of the Month Section */}
-        <div className="deal-of-the-month-card">
-          <div className="deal-header">
-            <h2 className="deal-title">DEAL OF THE DAY</h2>
-          </div>
-          <div className="deal-content">
-            {/* <span className="deal-discount">{dealProduct.discount}</span> */}
-            <div className="deal-image-wrapper">
-              <img
-                src={dealProduct.image}
-                alt={dealProduct.name}
-                className="deal-image"
-              />
-            </div>
-            <h3 className="deal-product-name">{dealProduct.name}</h3>
-            <div className="deal-prices">
-              <p className="deal-original-price">{dealProduct.originalPrice}</p>
-              <p className="deal-current-price">{dealProduct.dealPrice}</p>
-            </div>
-            <button className="deal-button">Grab This Deal</button>
-          </div>
-        </div>
-
-        {/* Latest Products Section */}
         <div className="latest-products-main-content">
           <div className="LatestProducts-header">
             <h2 className="LatestProducts-title">Latest products</h2>
@@ -140,18 +106,53 @@ const LatestProducts = () => {
         </div>
       </div>
 
-      <div className="sectionWithTwoImages">
-        <img
-          src={sectionImageOne}
-          alt="SectionOne"
-          className="section-image-two"
-        />
-        <img
-          src={sectionImageTwo}
-          alt="SectionTwo"
-          className="section-image-two"
-        />
-      </div>
+      {/* Two images after latest products */}
+      {secondBanner.length > 2 && (
+        <div className="sectionWithTwoImages">
+          {/* Second Banner Image */}
+          {secondBanner[1] &&
+            (secondBanner[1].url ? (
+              <a
+                href={secondBanner[1].url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src={secondBanner[1].image}
+                  alt="Promotional Banner 2"
+                  className="section-image-two" // Kept original class name
+                />
+              </a>
+            ) : (
+              <img
+                src={secondBanner[1].image}
+                alt="Promotional Banner 2"
+                className="section-image-two" // Kept original class name
+              />
+            ))}
+          {/* Third Banner Image */}
+          {secondBanner[2] &&
+            (secondBanner[2].url ? (
+              <a
+                href={secondBanner[2].url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src={secondBanner[2].image}
+                  alt="Promotional Banner 3"
+                  className="section-image-two" // Kept original class name
+                />
+              </a>
+            ) : (
+              <img
+                src={secondBanner[2].image}
+                alt="Promotional Banner 3"
+                className="section-image-two" // Kept original class name
+              />
+            ))}
+        </div>
+      )}
     </section>
   );
 };

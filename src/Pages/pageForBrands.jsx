@@ -8,8 +8,6 @@ const Brands = () => {
   const navigate = useNavigate();
   const [pageLoading, setPageLoading] = useState(true);
   const [pageError, setPageError] = useState(null);
-
-  // Destructure brands (from global state) and the fetch function (memoized)
   const { allBrands, fetchBrandsData, IMAGE_BASE_URL } = useContext(AppContext); // Add IMAGE_BASE_URL
 
   // useEffect to fetch brands when this component mounts
@@ -65,7 +63,7 @@ const Brands = () => {
   };
 
   const handleBrandClick = (brandId) => {
-    navigate(`/products/brand/${brandId}`);
+    navigate(`/shop?brand_id=${brandId}`);
   };
 
   const filteredBrands = allBrands.filter((brand) =>

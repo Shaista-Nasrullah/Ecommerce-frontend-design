@@ -185,7 +185,8 @@
     justify-content: center;
   }
   .signup-card .form-control {
-    width: 280px;
+    /* width: 280px; */
+    width: 100%;
   }
   .signup-card .signup-button {
     width: 250px;
@@ -209,7 +210,8 @@
     justify-content: center;
   }
   .signup-card .form-control {
-    width: 280px;
+    /* width: 280px; */
+    width: 100%;
   }
   .signup-card .signup-button {
     width: 250px;

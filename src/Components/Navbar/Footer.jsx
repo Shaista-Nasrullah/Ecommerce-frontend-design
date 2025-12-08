@@ -108,6 +108,9 @@ const Footer = () => {
                 <a href="/refund-policy">Refund Policy</a>
               </li>
               <li>
+                <a href="/return-policy">Return Policy</a>
+              </li>
+              <li>
                 <a href="/cancellation-policy">Cancellation Policy</a>
               </li>
             </ul>
