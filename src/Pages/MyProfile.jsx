@@ -7,7 +7,7 @@ import {
   Form,
   Button,
   Spinner,
-  Dropdown, // Import Dropdown
+  Dropdown, 
 } from "react-bootstrap";
 import {
   PersonCircle,
@@ -141,11 +141,6 @@ const MyProfile = () => {
 
   return (
     <>
-      {/* <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-      /> */}
 
       <Container className="custom-container-width mt-4">
         <Row>
